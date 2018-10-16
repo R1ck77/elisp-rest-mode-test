@@ -1,19 +1,11 @@
-(require 'rest-state)
-(require 'rest-client)
-(require 'rest--posts)
-
 (defconst rest-mode-debug t)
 
 (if rest-mode-debug
     (setq load-path (append load-path '("."))))
 
-
-(defun rest-mode--format-post (post get-user-f)
-  (let* ((user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
-         (user-name (cdr (assoc 'name user-for-id))))
-    (format "%s: %s"
-            user-name
-            (cdr (assoc 'title post)))))
+(require 'rest-state)
+(require 'rest-client)
+(require 'rest--posts)
 
 ;;; TODO/FIXME maybe I need a generic memoization method instead…
 (defun rest-mode--get-user-with-id (user-id)
@@ -24,16 +16,6 @@
         (setq rest-state--users (append rest-state--users (list (cons user-id user))))
         user))))
 
-(defun rest-mode--format-post-with-user (post)
-  (rest-mode--format-post post 'rest-mode--get-user-with-id))
-
-;;; TODO/FIXME too messy
-(defun rest-mode--insert-posts ()
-  (let* ((users '()))
-    (mapcar (lambda (post-as-string)
-              (insert post-as-string)
-              (insert "\n"))
-            (mapcar 'rest-mode--format-post-with-user (rest-read-posts)))))
 
 
 ;;;; Boilerplate code
@@ -51,7 +33,7 @@
   (interactive)
   (rest-state--init)
   (switch-to-buffer "*Posts*")
-  (rest-mode--insert-posts)
+  (rest-posts--insert-posts)
   (kill-all-local-variables)
   (setq major-mode 'rest-mode)
   (setq mode-name "ReSt")
