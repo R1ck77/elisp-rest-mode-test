@@ -24,6 +24,8 @@
 (defun rest-read-user (user-id)
   (rest--request (format "/users/%d" user-id)))
 
+(defun rest-read-post (post-id)
+  (rest--request (format "/posts/%d" post-id)))
 
 (provide 'rest-client)
 

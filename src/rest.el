@@ -1,5 +1,6 @@
 (require 'rest-state)
 (require 'rest-client)
+(require 'rest--posts)
 
 (defconst rest-mode-debug t)
 
