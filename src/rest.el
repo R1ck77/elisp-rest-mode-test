@@ -18,14 +18,10 @@
 (defun rest-mode--get-user-with-id (user-id)
   (let ((cached (assoc user-id rest-state--users)))
     (if cached
-        (progn
-          (message "Getting a cached result for id: %d" user-id)
-          cached)
-      (progn
-        (message "Reading user for id: %d" user-id)
-        (let ((user (rest-read-user user-id)))
-          (setq rest-state--users (append rest-state--users (list (cons user-id user))))
-          user)))))
+        cached
+      (let ((user (rest-read-user user-id)))
+        (setq rest-state--users (append rest-state--users (list (cons user-id user))))
+        user))))
 
 ;;; TODO/FIXME too messy
 (defun rest-mode--insert-posts ()
@@ -49,6 +45,7 @@
 
 (defun rest-mode ()
   (interactive)
+  (rest-state--init)
   (switch-to-buffer "*Posts*")
   (rest-mode--insert-posts)
   (kill-all-local-variables)
