@@ -1,9 +1,11 @@
+(require 'rest-state)
+(require 'rest-client)
+
 (defconst rest-mode-debug t)
 
 (if rest-mode-debug
     (setq load-path (append load-path '("."))))
 
-(require 'rest-client)
 
 (defun rest-mode--format-post (post get-user-f)
   (let* ((user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
@@ -13,20 +15,23 @@
             (cdr (assoc 'title post)))))
 
 ;;; TODO/FIXME maybe I need a generic memoization method instead…
-(defun rest-mode--create-get-user-with-id ()  
-  (lexical-let ((users-known '()))
-    (lambda (user-id)
-      (unless (assoc user-id users-known)
+(defun rest-mode--get-user-with-id (user-id)
+  (let ((cached (assoc user-id rest-state--users)))
+    (if cached
+        (progn
+          (message "Getting a cached result for id: %d" user-id)
+          cached)
+      (progn
         (message "Reading user for id: %d" user-id)
         (let ((user (rest-read-user user-id)))
-          (append users-known (list (cons user-id user)))
+          (setq rest-state--users (append rest-state--users (list (cons user-id user))))
           user)))))
 
 ;;; TODO/FIXME too messy
 (defun rest-mode--insert-posts ()
   (let* ((users '()))
     (lexical-let ((format-post (lambda (post)
-                                 (rest-mode--format-post post (rest-mode--create-get-user-with-id)))))
+                                 (rest-mode--format-post post 'rest-mode--get-user-with-id))))
      (mapcar (lambda (post-as-string)
                (insert post-as-string)
                (insert "\n"))
