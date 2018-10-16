@@ -24,16 +24,19 @@
         (setq rest-state--users (append rest-state--users (list (cons user-id user))))
         user))))
 
+(defun rest-mode--format-post-with-user (post)
+  (rest-mode--format-post post 'rest-mode--get-user-with-id))
+
 ;;; TODO/FIXME too messy
 (defun rest-mode--insert-posts ()
   (let* ((users '()))
-    (lexical-let ((format-post (lambda (post)
-                                 (rest-mode--format-post post 'rest-mode--get-user-with-id))))
-     (mapcar (lambda (post-as-string)
-               (insert post-as-string)
-               (insert "\n"))
-             (mapcar format-post (rest-read-posts))))))
+    (mapcar (lambda (post-as-string)
+              (insert post-as-string)
+              (insert "\n"))
+            (mapcar 'rest-mode--format-post-with-user (rest-read-posts)))))
 
+
+;;;; Boilerplate code
 (defvar rest-mode-hook nil "* List of functions to call when entering rest mode")
 
 (defvar rest-mode-map nil "Keymap for rest major mode")
