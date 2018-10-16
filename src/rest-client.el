@@ -18,4 +18,12 @@
     (rest--json-request (format "%s://%s%s" schema host path))))
 
 
+(defun rest-read-posts ()
+  (rest--request "/posts"))
+
+(defun rest-read-user (user-id)
+  (rest--request (format "/users/%d" user-id)))
+
+
+(provide 'rest-client)
 
