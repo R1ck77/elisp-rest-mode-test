@@ -30,8 +30,7 @@
      (line-end-position)))
 
 (defun clear-current-line ()
-  ;;; TODO
-  )
+  (delete-region (line-beginning-position) (line-end-position)))
 
 (defun update-current-line (operator)
   (let* ((current-line (thing-at-point 'line t))
