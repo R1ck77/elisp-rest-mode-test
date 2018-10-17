@@ -1,4 +1,4 @@
-f;;; just a test for now
+;;; just a test for now
 
 (defun size-changed (frame)
   (message "Frame %s changed!" frame))
@@ -6,14 +6,20 @@ f;;; just a test for now
 (add-hook 'window-size-change-functions 'size-changed)
 (remove-hook 'window-size-change-functions 'size-changed)
 
+(defun add-content ()
+  (when(= (- (line-end-position) (line-beginning-position)) 0)
+    (insert "new value"))
+  (if (= (point) (point-max))
+      (insert "\n")
+    (forward-line)))
+
 (defun something-happened ()
+  (interactive)
   (save-excursion
-    (while-no-input (redisplay)
-        (let ((original-start (window-start)))
-          (while (eq (window-start) original-start)
-            (if (= (- (line-end-position) (line-beginning-position)) 0)
-                (insert "new value"))
-            (insert "\n"))))))
+    (let ((original-start (window-start)))
+      (while (eq (window-start) original-start)
+        (add-content)
+        (redisplay)))))
 
 (defun add-my-hook ()
   (interactive)
