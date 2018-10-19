@@ -6,21 +6,6 @@
 (add-hook 'window-size-change-functions 'size-changed)
 (remove-hook 'window-size-change-functions 'size-changed)
 
-(defun add-content ()
-  (when(= (- (line-end-position) (line-beginning-position)) 0)
-    (insert "new value"))
-  (if (= (point) (point-max))
-      (insert "\n")
-    (forward-line)))
-
-(defun something-happened ()
-  (interactive)
-  (save-excursion
-    (let ((original-start (window-start)))
-      (while (eq (window-start) original-start)
-        (add-content)
-        (redisplay)))))
-
 (defun current-line ()
   (buffer-substring-no-properties (line-end-position)
                                   (line-beginning-position)))
@@ -32,18 +17,20 @@
 (defun clear-current-line ()
   (delete-region (line-beginning-position) (line-end-position)))
 
+(defun update-line (new-content)
+  (clear-current-line)
+  (insert new-content)
+  (if (= (point) (point-max))
+      (insert "\n")
+    (forward-line))
+  t)
+
 (defun update-current-line (operator)
   (let* ((current-line (thing-at-point 'line t))
          (last-line-detected (is-last-line?)))
     (let ((result (funcall operator current-line last-line-detected)))
       (if result
-          (progn
-            (clear-current-line)
-            (insert result)
-            (if (= (point) (point-max))
-                (insert "\n")
-              (forward-line))
-            t)
+          (update-line)        
         nil))))
 
 (defun update-page (operator)
@@ -68,16 +55,25 @@ The return value of operator is the output that will replace the
 line, or nil to interrupt the recursion.
 
 The content is re-displayed at each insertion"
-  (let ((original-start (window-start))
-        (continue t))
-    (while (and continue (eq (window-start) original-start))
-      (setq continue (update-current-line))
-      (redisplay))))
+  (save-excursion
+    (let ((original-start (window-start))
+          (continue t))
+      (goto-char original-start)
+      (while (and continue (eq (window-start) original-start))
+        (setq continue (update-current-line operator))
+        (redisplay)))))
+
+(defun print-arguments (content last-line)
+  (format "%s:%s" content last-line))
+
+(defun update-test ()
+  (interactive)
+  (update-page 'print-arguments))
 
 (defun add-my-hook ()
   (interactive)
-  (add-hook 'post-command-hook 'something-happened t t))
+  (add-hook 'post-command-hook 'update-test t t))
 
 (defun remove-my-hook ()
   (interactive)
-  (remove-hook 'post-command-hook 'something-happened t))
+  (remove-hook 'post-command-hook 'update-test t))
