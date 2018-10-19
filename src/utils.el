@@ -30,7 +30,7 @@
          (last-line-detected (is-last-line?)))
     (let ((result (funcall operator current-line last-line-detected)))
       (if result
-          (update-line)        
+          (update-line result)        
         nil))))
 
 (defun update-page (operator)
