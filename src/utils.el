@@ -56,14 +56,17 @@ line, or nil to interrupt the recursion.
 
 The content is re-displayed at each insertion"
   (save-excursion
-    (let ((original-start (window-start))
-          (continue t))
-      (goto-char original-start)
-      (while (and continue (eq (window-start) original-start))
+    (let ((lines (window-body-height))
+          (continue t)
+          (current-line 0))
+      (goto-char (window-start))
+      (while (and continue (< current-line lines))
         (setq continue (update-current-line operator))
-        (redisplay)))))
+        (redisplay)
+        (setq current-line (+ current-line 1))))))
 
 (defun print-arguments (content last-line)
+  (print "\n\n\n\n")
   (format "%s:%s" content last-line))
 
 (defun update-test ()
