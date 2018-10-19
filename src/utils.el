@@ -26,7 +26,7 @@
   t)
 
 (defun update-current-line (operator)
-  (let* ((current-line (thing-at-point 'line t))
+  (let* ((current-line (current-line))
          (last-line-detected (is-last-line?)))
     (let ((result (funcall operator current-line last-line-detected)))
       (if result
