@@ -17,7 +17,7 @@
           (rest-utils--update-line result)        
         nil))))
 
-(defun update-page (operator)
+(defun rest-utils-update-page (operator)
   "Execute operator on all potential lines in the visible buffer
 
 The operator will be called for each line with the line content,
@@ -48,3 +48,6 @@ The content is re-displayed at each insertion"
         (setq continue (rest-utils--update-current-line operator))
         (redisplay)
         (setq current-line (+ current-line 1))))))
+
+(defun rest-utils--print-arguments-demo (content is-last-line)
+  (format "%s:%s" content is-last-line))
