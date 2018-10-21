@@ -1,4 +1,4 @@
-(provide 'rest-utils)
+(require 'rest-utils)
 
 (defun rest-posts--format-post (post get-user-f)
   (let* ((id (cdr (assoc 'id post)))
