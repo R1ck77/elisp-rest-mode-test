@@ -67,4 +67,11 @@ The content is re-displayed at each insertion"
     (if result
         (match-string 1 string))))
 
+(defun rest-utils--force-read-only-mode ()
+    (if (not buffer-read-only)
+      (read-only-mode)))
+
+(defun rest-utils--force-read-only ()
+  (add-hook 'read-only-mode-hook 'rest-utils--force-read-only-mode t t))
+
 (provide 'rest-utils)

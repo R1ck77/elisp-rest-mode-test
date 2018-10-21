@@ -57,12 +57,8 @@
 (defun rest-posts--update-posts-on-page ()
   (rest-utils-update-page 'rest-posts--update-post-line))
 
-(defun rest-posts--revert-to-read-mode ()
-  (if (not view-read-only)
-      (read-only-mode)))
-
 (defun add-update-hook ()
   (add-hook 'post-command-hook 'rest-posts--update-posts-on-page t t)
-  (add-hook 'read-only-mode-hook 'rest-posts--revert-to-read-mode t t))
+  (rest-utils--force-read-only-mode))
 
 (provide 'rest--posts)
