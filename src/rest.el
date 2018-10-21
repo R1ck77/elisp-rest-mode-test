@@ -34,6 +34,7 @@
   (rest-state--init)
   (switch-to-buffer "*Posts*")
   (rest-posts--insert-posts)
+  (rest-utils--force-read-only-mode)
   (kill-all-local-variables)
   (setq major-mode 'rest-mode)
   (setq mode-name "ReSt")
