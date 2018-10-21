@@ -1,7 +1,7 @@
 (require 'url)
 (require 'json)
 
-(defvar schema "https")
+(defvar schema "http")
 (defvar host "jsonplaceholder.typicode.com")
 
 (defun rest--json-request (url)
