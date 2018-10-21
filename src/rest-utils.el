@@ -1,3 +1,13 @@
+(defun rest-utils--current-line ()
+  (buffer-substring-no-properties (line-end-position)
+                                  (line-beginning-position)))
+
+
+(defun rest-utils--is-last-line? ()
+  (= (point-max)
+     (line-end-position)))
+
+
 (defun rest-utils-clear-current-line ()
   (delete-region (line-beginning-position) (line-end-position)))
 
@@ -10,8 +20,8 @@
   t)
 
 (defun rest-utils--update-current-line (operator)
-  (let* ((current-line (current-line))
-         (last-line-detected (is-last-line?)))
+  (let* ((current-line (rest-utils--current-line))
+         (last-line-detected (rest-utils--is-last-line?)))
     (let ((result (funcall operator current-line last-line-detected)))
       (if result
           (rest-utils--update-line result)        
@@ -51,3 +61,10 @@ The content is re-displayed at each insertion"
 
 (defun rest-utils--print-arguments-demo (content is-last-line)
   (format "%s:%s" content is-last-line))
+
+(defun rest-utils--search-string-1-group (string regex)
+  (let ((result (string-match regex string)))
+    (if result
+        (match-string 1 string))))
+
+(provide 'rest-utils)
