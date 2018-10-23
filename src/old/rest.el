@@ -7,14 +7,6 @@
 (require 'rest-client)
 (require 'rest--posts)
 
-;;; TODO/FIXME maybe I need a generic memoization method instead…
-(defun rest-mode--get-user-with-id (user-id)
-  (let ((cached (assoc user-id rest-state--users)))
-    (if cached
-        cached
-      (let ((user (rest-read-user user-id)))
-        (setq rest-state--users (append rest-state--users (list (cons user-id user))))
-        user))))
 
 
 
@@ -31,10 +23,6 @@
 
 (defun rest-mode ()
   (interactive)
-  (rest-state--init)
-  (switch-to-buffer "*Posts*")
-  (rest-posts--insert-posts)
-  (rest-utils--force-read-only-mode)
   (kill-all-local-variables)
   (setq major-mode 'rest-mode)
   (setq mode-name "ReSt")
