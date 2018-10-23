@@ -26,9 +26,17 @@ Pagination would be a nice idea, but the API dosen't support it"
                 (redisplay))
               (mapcar 'rest-posts--format-post-with-user (rest-api--read-posts))))))
 
+(defun jump-to-post ()
+  (interactive)
+  (message "Show the post here!"))
+
+(defun re-bind-enter ()
+  (local-set-key (kbd "RET") 'jump-to-post))
+
 (defun rest-posts--show-buffer ()
   (switch-to-buffer "*Posts*")
   (rest-posts--insert-posts)
-  (rest-utils--force-read-only))
+  (rest-utils--force-read-only)
+  (re-bind-enter))
 
 (provide 'rest-posts)
