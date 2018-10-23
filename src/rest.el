@@ -4,6 +4,7 @@
     (setq load-path (append load-path '("."))))
 
 (require 'rest-state)
+(require 'rest-posts)
 
 (defun rest ()
   (interactive)
