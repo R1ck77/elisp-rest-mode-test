@@ -76,8 +76,13 @@ Pagination would be a nice idea, but the API dosen't support it"
   (local-set-key (kbd "RET") 'rest-posts--open-post)
   (local-set-key (kbd "TAB") 'rest-posts--expand-post))
 
+(defun rest-posts--wipe-old-buffer ()
+  (let ((old-buffer (get-buffer rest-posts--buffer-name)))
+    (when old-buffer
+      (kill-buffer old-buffer))))
+
 (defun rest-posts--show-buffer ()
-  (kill-buffer rest-posts--buffer-name)
+  (rest-posts--wipe-old-buffer)
   (switch-to-buffer rest-posts--buffer-name)
   (font-lock-mode)
   (rest-posts--insert-posts)
