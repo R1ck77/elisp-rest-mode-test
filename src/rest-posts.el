@@ -69,8 +69,9 @@ Pagination would be a nice idea, but the API dosen't support it"
   (interactive)
   (let ((inhibit-read-only t))
     (with-silent-modifications
-      (end-of-line)
-      (insert (rest-posts--get-current-body)))))
+      (forward-line)
+      (insert (rest-posts--get-current-body))
+      (insert "\n"))))
 
 (defun re-bind-enter ()
   (local-set-key (kbd "RET") 'rest-posts--open-post)
