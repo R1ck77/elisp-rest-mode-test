@@ -59,6 +59,7 @@ Pagination would be a nice idea, but the API dosen't support it"
   (interactive)
   (message "RET The current post id is: %d" (rest-posts--get-current-id)))
 
+;;; TODO/FIXME this one has a bug: the end line of the expanded post has the wrong property
 (defun rest-posts--expand-post ()
   (interactive)
   (let ((inhibit-read-only t))
