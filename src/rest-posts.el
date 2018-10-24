@@ -1,6 +1,7 @@
 (require 'rest-state)
 (require 'rest-utils)
 
+(defconst rest-posts--buffer-name "*Posts*")
 (defconst rest-posts--id-property 'post-id)
 (defconst rest-posts--body-property 'post-body)
 
@@ -10,15 +11,19 @@
 (defun rest-posts--get-body (post)
   (cdr (assoc 'body post)))
 
+(defun rest-posts--boldify (string)
+  (put-text-property 0 (length string) 'font-lock-face 'bold string)
+  string)
+
 (defun rest-posts--format-post (post get-user-f)
   (let* ((id (rest-posts--get-post-id post))
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
          (user-name (cdr (assoc 'name user-for-id))))
-    ()
-    (format "* id:%d <%s> %s\n"
-            id
-            user-name
-            (cdr (assoc 'title post)))))
+    (rest-posts--boldify 
+     (format "* id:%d <%s> %s\n"
+             id
+             user-name
+             (cdr (assoc 'title post))))))
 
 (defun rest-posts--format-post-with-user (post)
   "Format the post representation using the caching version of the get-user function"
@@ -72,7 +77,9 @@ Pagination would be a nice idea, but the API dosen't support it"
   (local-set-key (kbd "TAB") 'rest-posts--expand-post))
 
 (defun rest-posts--show-buffer ()
-  (switch-to-buffer "*Posts*")
+  (kill-buffer rest-posts--buffer-name)
+  (switch-to-buffer rest-posts--buffer-name)
+  (font-lock-mode)
   (rest-posts--insert-posts)
   (rest-utils--force-read-only)
   (re-bind-enter))
