@@ -3,6 +3,7 @@
 
 (defconst rest-posts--buffer-name "*Posts*")
 (defconst rest-posts--id-property 'post-id)
+(defconst rest-posts--post-body 'post-is-body)
 (defconst rest-posts--body-property 'post-body)
 
 (defun rest-posts--get-post-id (post)
@@ -12,8 +13,7 @@
   (cdr (assoc 'body post)))
 
 (defun rest-posts--boldify (string)
-  (put-text-property 0 (length string) 'font-lock-face 'bold string)
-  string)
+  (rest-utils--propertize-text string 'font-lock-face 'bold))
 
 (defun rest-posts--format-post (post get-user-f)
   (let* ((id (rest-posts--get-post-id post))
@@ -34,13 +34,11 @@
   (let ((formatted-post (rest-posts--format-post-with-user post))
         (post-id (rest-posts--get-post-id post))
         (body (rest-posts--get-body post)))
-    (put-text-property 0 (length formatted-post)
-                       rest-posts--id-property post-id
-                       formatted-post)
-    (put-text-property 0 (length formatted-post)
-                       rest-posts--body-property body
-                       formatted-post)
-    formatted-post))
+    (rest-utils--propertize-text (rest-utils--propertize-text formatted-post
+                                                              rest-posts--id-property
+                                                              post-id)
+                                 rest-posts--body-property
+                                 body)))
 
 ;;; TODO/FIXME filter posts with nil users, remove the \n at the end of the list
 (defun rest-posts--insert-posts ()
@@ -64,20 +62,53 @@ Pagination would be a nice idea, but the API dosen't support it"
   (interactive)
   (message "RET The current post id is: %d" (rest-posts--get-current-id)))
 
-;;; TODO/FIXME this one has a bug: the end line of the expanded post has the wrong property
+(defun rest-posts--set-body (string)
+  (rest-utils--propertize-text string 'rest-posts--post-body t))
+
+(defun rest-posts--backtrack-to-header ()
+  (while (and (rest-posts--is-body?)
+              (forward-line -1))))
+
 (defun rest-posts--expand-post ()
   (interactive)
   (let ((body (rest-posts--get-current-body)))
     (when body
       (let ((inhibit-read-only t))
-        (with-silent-modifications
-          (forward-line)
-          (insert body)
-          (insert "\n"))))))
+        (save-excursion
+          (with-silent-modifications
+           (forward-line)
+           (insert (rest-posts--set-body (concat body "\n")))))))))
+
+(defun rest-posts--is-body? ()
+  (get-text-property (point) 'rest-posts--post-body))
+
+(defun rest-posts--collapse-post ()
+  (interactive)
+  (rest-posts--backtrack-to-header)
+  (with-silent-modifications
+    (save-excursion
+      (forward-line)
+      (let ((inhibit-read-only t))
+        (while (rest-posts--is-body?)
+          (let ((kill-start (point)))
+            (forward-line)
+            (delete-region kill-start (point))))))))
+
+(defun rest-posts--is-next-line-body? ()
+  (save-excursion
+    (and (= (forward-line) 0)
+         (rest-posts--is-body?))))
+
+(defun rest-posts--toggle-post ()
+  (interactive)
+  (if (or (rest-posts--is-body?)
+          (rest-posts--is-next-line-body?))
+      (rest-posts--collapse-post)
+    (rest-posts--expand-post)))
 
 (defun re-bind-enter ()
   (local-set-key (kbd "RET") 'rest-posts--open-post)
-  (local-set-key (kbd "TAB") 'rest-posts--expand-post))
+  (local-set-key (kbd "TAB") 'rest-posts--toggle-post))
 
 (defun rest-posts--wipe-old-buffer ()
   (let ((old-buffer (get-buffer rest-posts--buffer-name)))
@@ -88,7 +119,7 @@ Pagination would be a nice idea, but the API dosen't support it"
   (rest-posts--wipe-old-buffer)
   (switch-to-buffer rest-posts--buffer-name)
   (font-lock-mode)
-  (rest-posts--insert-posts)
+  (rest-posts--insert-posts)  ;;; TODO/FIXME insert an error message if posts can't be read
   (rest-utils--force-read-only)
   (re-bind-enter))
 
