@@ -67,11 +67,13 @@ Pagination would be a nice idea, but the API dosen't support it"
 ;;; TODO/FIXME this one has a bug: the end line of the expanded post has the wrong property
 (defun rest-posts--expand-post ()
   (interactive)
-  (let ((inhibit-read-only t))
-    (with-silent-modifications
-      (forward-line)
-      (insert (rest-posts--get-current-body))
-      (insert "\n"))))
+  (let ((body (rest-posts--get-current-body)))
+    (when body
+      (let ((inhibit-read-only t))
+        (with-silent-modifications
+          (forward-line)
+          (insert body)
+          (insert "\n"))))))
 
 (defun re-bind-enter ()
   (local-set-key (kbd "RET") 'rest-posts--open-post)
