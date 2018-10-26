@@ -108,7 +108,7 @@ Pagination would be a nice idea, but the API dosen't support it"
       (rest-posts--collapse-post)
     (rest-posts--expand-post)))
 
-(defun re-bind-enter ()
+(defun rest-posts--bind-keys ()
   (local-set-key (kbd "RET") 'rest-posts--open-post)
   (local-set-key (kbd "TAB") 'rest-posts--toggle-post))
 
@@ -121,6 +121,6 @@ Pagination would be a nice idea, but the API dosen't support it"
   (font-lock-mode)
   (rest-posts--insert-posts)  ;;; TODO/FIXME insert an error message if posts can't be read
   (rest-utils--force-read-only)
-  (re-bind-enter))
+  (rest-posts--bind-keys))
 
 (provide 'rest-posts)
