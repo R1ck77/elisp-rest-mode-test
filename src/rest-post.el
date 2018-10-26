@@ -7,15 +7,17 @@
   (local-set-key (kbd "q") 'rest-utils--close-buffer))
 
 (defun rest-post--format-field (title-value)
-  (concat (first title-value) ":" (second title-value)))
+  (concat (rest-utils--bold (first title-value))
+          (second title-value)))
 
 (defun rest-post--data-to-printable-lines (post-data)
-    (seq-map 'rest-post--format-field (list (list "title" (cdr (assoc 'title post-data)))
-                                            (list "body" (cdr (assoc 'body post-data))))))
+  (seq-map 'rest-post--format-field (list (list "title  " (cdr (assoc 'title post-data)))
+                                          (list "author " (number-to-string (cdr (assoc 'userId post-data))))
+                                          (list "body\n" (cdr (assoc 'body post-data))))))
 
 (defun rest-post--format-post (post-data)
   (seq-reduce (lambda (acc line)
-                (concat acc "\n" line))
+                (concat acc line "\n"))
               (rest-post--data-to-printable-lines post-data)
               ""))
 
@@ -24,9 +26,10 @@
 
 (defun rest-post--show-buffer (id)
   (with-current-buffer (rest-utils--context-buffer-bottom rest-post-buffer-name)
-      (insert (rest-post--read-formatted-post id))
-      (rest-utils--force-read-only)
-      (rest-post--bind-keys)))
+    (font-lock-mode)
+    (insert (rest-post--read-formatted-post id))
+    (rest-utils--force-read-only)
+    (rest-post--bind-keys)))
 
 (provide 'rest-post)
 

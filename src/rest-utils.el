@@ -16,9 +16,10 @@
 
 
 (defun rest-utils--yellow (string)
-  (rest-utils--colorize string "yellow")
-  string)
+  (rest-utils--colorize string "yellow"))
 
+(defun rest-utils--grey (string)
+  (rest-utils--colorize string "gray"))
 
 (defun rest-utils--wipe-buffer-if-present (name)
   (let ((old-buffer (get-buffer name)))
