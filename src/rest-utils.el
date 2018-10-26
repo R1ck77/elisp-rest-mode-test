@@ -10,6 +10,16 @@
   (put-text-property 0 (length string) 'font-lock-face 'bold string)
   string)
 
+(defun rest-utils--colorize (string color)
+  (put-text-property 0 (length string) 'font-lock-face (list ':foreground color) string)
+  string)
+
+
+(defun rest-utils--yellow (string)
+  (rest-utils--colorize string "yellow")
+  string)
+
+
 (defun rest-utils--wipe-buffer-if-present (name)
   (let ((old-buffer (get-buffer name)))
     (when old-buffer

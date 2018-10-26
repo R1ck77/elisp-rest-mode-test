@@ -16,12 +16,15 @@
 (defun rest-posts--format-post (post get-user-f)
   (let* ((id (rest-posts--get-post-id post))
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
-         (user-name (cdr (assoc 'name user-for-id))))
-    (rest-utils--bold
-     (format "* id:%d <%s> %s\n"
-             id
-             user-name
-             (cdr (assoc 'title post))))))
+         (user-name (cdr (assoc 'name user-for-id)))
+         (title (cdr (assoc 'title post))))
+    (concat (rest-utils--bold "*")
+            " id:"
+            (rest-utils--bold (number-to-string id))
+            " <"
+            (rest-utils--yellow user-name)
+            "> "
+            title "\n")))
 
 (defun rest-posts--format-post-with-user (post)
   "Format the post representation using the caching version of the get-user function"
@@ -62,7 +65,7 @@ Pagination would be a nice idea, but the API dosen't support it"
     (rest-post--show-buffer id)))
 
 (defun rest-posts--set-body (string)
-  (rest-utils--propertize-text string 'rest-posts--post-body t))
+  (rest-utils--colorize (rest-utils--propertize-text string 'rest-posts--post-body t) "gray"))
 
 (defun rest-posts--backtrack-to-header ()
   (while (and (rest-posts--is-body?)
@@ -106,6 +109,7 @@ Pagination would be a nice idea, but the API dosen't support it"
     (rest-posts--expand-post)))
 
 (defun rest-posts--bind-keys ()
+  (local-set-key (kbd "r") 'rest-posts--show-buffer)
   (local-set-key (kbd "q") 'rest-utils--close-buffer)
   (local-set-key (kbd "RET") 'rest-posts--open-post)
   (local-set-key (kbd "TAB") 'rest-posts--toggle-post))
@@ -114,6 +118,7 @@ Pagination would be a nice idea, but the API dosen't support it"
   (rest-utils--wipe-buffer-if-present rest-posts--buffer-name))
 
 (defun rest-posts--show-buffer ()
+  (interactive)
   (rest-posts--wipe-old-buffer)
   (switch-to-buffer rest-posts--buffer-name)
   (font-lock-mode)
