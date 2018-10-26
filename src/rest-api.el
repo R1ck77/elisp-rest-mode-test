@@ -23,7 +23,7 @@
 (defun rest-api--read-user (user-id)
   (rest-api--request (format "/users/%d" user-id)))
 
-;;; (defun rest-api-read-post (post-id)
-;;;   (rest-api--request (format "/posts/%d" post-id)))
+(defun rest-api--read-post (post-id)
+  (rest-api--request (format "/posts/%d" post-id)))
 
 (provide 'rest-api)

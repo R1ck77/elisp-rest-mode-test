@@ -11,5 +11,15 @@
     (when old-buffer
       (kill-buffer old-buffer))))
 
+(defun rest-utils--context-buffer-bottom (name)
+  (rest-utils--wipe-buffer-if-present name)
+    (let ((buffer (get-buffer-create name)))    
+      (display-buffer-in-side-window buffer nil)
+      buffer))
+
+(defun rest-utils--close-buffer ()
+  (interactive)
+  (let ((kill-buffer-query-functions nil))
+    (kill-buffer)))
 
 (provide 'rest-utils)
