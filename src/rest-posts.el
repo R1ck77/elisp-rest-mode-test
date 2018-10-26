@@ -13,14 +13,11 @@
 (defun rest-posts--get-body (post)
   (cdr (assoc 'body post)))
 
-(defun rest-posts--boldify (string)
-  (rest-utils--propertize-text string 'font-lock-face 'bold))
-
 (defun rest-posts--format-post (post get-user-f)
   (let* ((id (rest-posts--get-post-id post))
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
          (user-name (cdr (assoc 'name user-for-id))))
-    (rest-posts--boldify 
+    (rest-utils--bold
      (format "* id:%d <%s> %s\n"
              id
              user-name
