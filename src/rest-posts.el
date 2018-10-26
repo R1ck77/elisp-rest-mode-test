@@ -1,5 +1,6 @@
 (require 'rest-state)
 (require 'rest-utils)
+(require 'rest-post)
 
 (defconst rest-posts--buffer-name "*Posts*")
 (defconst rest-posts--id-property 'post-id)
@@ -60,7 +61,8 @@ Pagination would be a nice idea, but the API dosen't support it"
 
 (defun rest-posts--open-post ()
   (interactive)
-  (message "RET The current post id is: %d" (rest-posts--get-current-id)))
+  (let ((id (rest-posts--get-current-id)))
+    (rest-post--show-buffer id)))
 
 (defun rest-posts--set-body (string)
   (rest-utils--propertize-text string 'rest-posts--post-body t))
@@ -111,9 +113,7 @@ Pagination would be a nice idea, but the API dosen't support it"
   (local-set-key (kbd "TAB") 'rest-posts--toggle-post))
 
 (defun rest-posts--wipe-old-buffer ()
-  (let ((old-buffer (get-buffer rest-posts--buffer-name)))
-    (when old-buffer
-      (kill-buffer old-buffer))))
+  (rest-utils--wipe-buffer-if-present rest-posts--buffer-name))
 
 (defun rest-posts--show-buffer ()
   (rest-posts--wipe-old-buffer)
