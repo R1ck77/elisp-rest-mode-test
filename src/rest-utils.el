@@ -6,6 +6,10 @@
   (put-text-property 0 (length string) property value string)
   string)
 
+(defun rest-utils--bold (string)
+  (put-text-property 0 (length string) 'font-lock-face 'bold string)
+  string)
+
 (defun rest-utils--wipe-buffer-if-present (name)
   (let ((old-buffer (get-buffer name)))
     (when old-buffer
