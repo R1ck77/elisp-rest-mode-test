@@ -22,7 +22,7 @@
             " id:"
             (rest-utils--bold (number-to-string id))
             " <"
-            (rest-utils--yellow user-name)
+            (rest-utils--yellow (substring user-name))
             "> "
             title "\n")))
 
