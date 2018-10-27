@@ -10,10 +10,14 @@
   (concat (rest-utils--bold (first title-value))
           (second title-value)))
 
+(defun rest-post--username-from-user-id (user-id)
+  (cdr (assoc 'name (rest-state--get-user-with-id user-id))))
+
 (defun rest-post--data-to-printable-lines (post-data)
-  (seq-map 'rest-post--format-field (list (list "title  " (cdr (assoc 'title post-data)))
-                                          (list "author " (number-to-string (cdr (assoc 'userId post-data))))
-                                          (list "body\n" (cdr (assoc 'body post-data))))))
+  (nconc
+   (seq-map 'rest-post--format-field (list (list "title  " (cdr (assoc 'title post-data)))
+                                           (list "author " (rest-post--username-from-user-id (cdr (assoc 'userId post-data))))))
+   (list (concat "\n" (cdr (assoc 'body post-data))))))
 
 (defun rest-post--format-post (post-data)
   (seq-reduce (lambda (acc line)
