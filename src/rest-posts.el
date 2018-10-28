@@ -39,7 +39,7 @@
 (defun rest-posts--get-body-for-post ()
   (rest-utils--grey
    (rest-posts--get-body
-    (rest-api--read-post
+    (rest-state--get-post-with-id
      (get-text-property (point) rest-posts--id-property)))))
 
 ;;; TODO/FIXME filter posts with nil users, remove the \n at the end of the list
