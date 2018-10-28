@@ -32,13 +32,15 @@
 (defun rest-posts--prepare-post-for-insertion (post)
   "Format the post and add a text property with its ID"
   (let ((formatted-post (rest-posts--format-post-with-user post))
-        (post-id (rest-posts--get-post-id post))
-        (body (rest-posts--get-body post)))
-    (rest-utils--propertize-text (rest-utils--propertize-text formatted-post
-                                                              rest-posts--id-property
-                                                              post-id)
-                                 rest-posts--body-property
-                                 body)))
+        (post-id (rest-posts--get-post-id post)))
+    (rest-utils--propertize-text formatted-post
+                                 rest-posts--id-property post-id)))
+
+(defun rest-posts--get-body-for-post ()
+  (rest-utils--grey
+   (rest-posts--get-body
+    (rest-api--read-post
+     (get-text-property (point) rest-posts--id-property)))))
 
 ;;; TODO/FIXME filter posts with nil users, remove the \n at the end of the list
 (defun rest-posts--insert-posts ()
@@ -48,15 +50,13 @@ Pagination would be a nice idea, but the API dosen't support it"
   (save-excursion 
     (let* ((users '()))
       (mapcar (lambda (post-as-string)
-                (rest-expand-insert-expandable-text post-as-string (lambda () "foobar"))
+                (rest-expand-insert-expandable-text post-as-string
+                                                    'rest-posts--get-body-for-post)
                 (redisplay))
               (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts))))))
 
 (defun rest-posts--get-current-id ()
   (get-text-property (point) rest-posts--id-property))
-
-(defun rest-posts--get-current-body ()
-  (get-text-property (point) rest-posts--body-property))
 
 (defun rest-posts--open-post ()
   (interactive)
