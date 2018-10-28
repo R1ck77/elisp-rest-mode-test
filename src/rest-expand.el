@@ -31,15 +31,18 @@ one is desired"
   (let ((text (rest-expand--get-expanded-text)))
     (save-excursion
       (goto-char (line-end-position))
-      ;;; TODO/FIXME this is bogus: wrong properties!
-      (insert (concat "\n" text )))))
+      (if (not (looking-at-p "\n"))
+          (insert "\n")) ;;; TODO/FIXME wrong text properties on "\n
+      (forward-line)
+      (insert (rest-utils--propertize-text (concat text "\n")
+                                           rest-expand--collapsible-property t)))))
 
 (defun rest-expand--collapse-text ()
   "Collapse the text at point"
   (save-excursion
-    (while (and (not (= (forward-line) 1))
-                (rest-expand--on-expanded-text?))
-      (kill-line))))
+    (forward-line)
+    (while (rest-expand--on-expanded-text?)
+      (delete-region (line-beginning-position) (+ (line-end-position) 1)))))
 
 (defun rest-expand--on-expandable-text? ()
   (get-text-property (point)
@@ -56,7 +59,7 @@ one is desired"
 
 (defun rest-expand--on-header-of-expanded-text? ()
   (and (rest-expand--on-expandable-text?)
-         (rest-expand-next-line-expanded?)))
+         (rest-expand--next-line-expanded?)))
 
 (defun rest-expand-toggle-text ()
   (interactive)
