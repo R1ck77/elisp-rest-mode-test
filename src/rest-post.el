@@ -7,8 +7,8 @@
   (local-set-key (kbd "q") 'rest-utils--close-buffer))
 
 (defun rest-post--format-field (title-value)
-  (concat (rest-utils--bold (first title-value))
-          (second title-value)))
+  (concat (rest-utils--bold (car title-value))
+          (elt title-value 1)))
 
 (defun rest-post--username-from-user-id (user-id)
   (cdr (assoc 'name (rest-state--get-user-with-id user-id))))
