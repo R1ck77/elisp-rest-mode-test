@@ -1,11 +1,10 @@
 (require 'rest-state)
 (require 'rest-utils)
 (require 'rest-post)
+(require 'rest-expand)
 
 (defconst rest-posts--buffer-name "*Posts*")
 (defconst rest-posts--id-property 'post-id)
-(defconst rest-posts--post-body 'post-is-body)
-(defconst rest-posts--body-property 'post-body)
 
 (defun rest-posts--get-post-id (post)
   (cdr (assoc 'id post)))
@@ -49,7 +48,7 @@ Pagination would be a nice idea, but the API dosen't support it"
   (save-excursion 
     (let* ((users '()))
       (mapcar (lambda (post-as-string)
-                (insert post-as-string)
+                (rest-expand-insert-expandable-text post-as-string (lambda () "foobar"))
                 (redisplay))
               (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts))))))
 
@@ -64,49 +63,10 @@ Pagination would be a nice idea, but the API dosen't support it"
   (let ((id (rest-posts--get-current-id)))
     (rest-post--show-buffer id)))
 
-(defun rest-posts--set-body (string)
-  (rest-utils--colorize (rest-utils--propertize-text string 'rest-posts--post-body t) "gray"))
-
-(defun rest-posts--backtrack-to-header ()
-  (while (and (rest-posts--is-body?)
-              (forward-line -1))))
-
-(defun rest-posts--expand-post ()
-  (interactive)
-  (let ((body (rest-posts--get-current-body)))
-    (when body
-      (let ((inhibit-read-only t))
-        (save-excursion
-          (with-silent-modifications
-           (forward-line)
-           (insert (rest-posts--set-body (concat body "\n")))))))))
-
-(defun rest-posts--is-body? ()
-  (get-text-property (point) 'rest-posts--post-body))
-
-(defun rest-posts--collapse-post ()
-  (interactive)
-  (rest-posts--backtrack-to-header)
-  (with-silent-modifications
-    (save-excursion
-      (forward-line)
-      (let ((inhibit-read-only t))
-        (while (rest-posts--is-body?)
-          (let ((kill-start (point)))
-            (forward-line)
-            (delete-region kill-start (point))))))))
-
-(defun rest-posts--is-next-line-body? ()
-  (save-excursion
-    (and (= (forward-line) 0)
-         (rest-posts--is-body?))))
-
 (defun rest-posts--toggle-post ()
   (interactive)
-  (if (or (rest-posts--is-body?)
-          (rest-posts--is-next-line-body?))
-      (rest-posts--collapse-post)
-    (rest-posts--expand-post)))
+  (let ((inhibit-read-only t))
+   (rest-expand-toggle-text)))
 
 (defun rest-posts--bind-keys ()
   (local-set-key (kbd "r") 'rest-posts--show-buffer)

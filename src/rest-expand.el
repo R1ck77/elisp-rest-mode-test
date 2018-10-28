@@ -29,20 +29,22 @@ one is desired"
 (defun rest-expand--expand-text ()
   "Expand the text in the header"
   (let ((text (rest-expand--get-expanded-text)))
-    (save-excursion
-      (goto-char (line-end-position))
-      (if (not (looking-at-p "\n"))
-          (insert "\n")) ;;; TODO/FIXME wrong text properties on "\n
-      (forward-line)
-      (insert (rest-utils--propertize-text (concat text "\n")
-                                           rest-expand--collapsible-property t)))))
+    (with-silent-modifications
+      (save-excursion
+       (goto-char (line-end-position))
+       (if (not (looking-at-p "\n"))
+           (insert "\n")) ;;; TODO/FIXME wrong text properties on "\n
+       (forward-line)
+       (insert (rest-utils--propertize-text (concat text "\n")
+                                            rest-expand--collapsible-property t))))))
 
 (defun rest-expand--collapse-text ()
   "Collapse the text at point"
-  (save-excursion
-    (forward-line)
-    (while (rest-expand--on-expanded-text?)
-      (delete-region (line-beginning-position) (+ (line-end-position) 1)))))
+  (with-silent-modifications
+    (save-excursion
+     (forward-line)
+     (while (rest-expand--on-expanded-text?)
+       (delete-region (line-beginning-position) (+ (line-end-position) 1))))))
 
 (defun rest-expand--on-expandable-text? ()
   (get-text-property (point)
