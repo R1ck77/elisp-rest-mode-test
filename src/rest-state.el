@@ -7,24 +7,20 @@
   (setq rest-state--users '())
   (setq rest-state--posts '()))
 
+(defun rest-state--get-cached (cache function id)
+  (let ((cached (assoc id (eval cache))))
+    (or cached
+      (let ((value (funcall function id)))
+        (set cache (append (eval cache) (list (cons id value))))
+        value))))
 
-;;; TODO/FIXME maybe I need a generic memoization method instead…
 (defun rest-state--get-user-with-id (user-id)
-  (let ((cached (assoc user-id rest-state--users)))
-    (if cached
-        cached
-      (let ((user (rest-api--read-user user-id)))
-        (setq rest-state--users (append rest-state--users (list (cons user-id user))))
-        user))))
+  (rest-state--get-cached 'rest-state--users
+                          'rest-api--read-user
+                          user-id))
 
-;;; TODO/FIXME ^^^ same
 (defun rest-state--get-post-with-id (post-id)
-  (let ((cached (assoc post-id rest-state--posts)))
-    (if cached
-        cached
-      (let ((post (rest-api--read-post post-id)))
-        (setq rest-state--posts (append rest-state--posts (list (cons post-id post))))
-        post))))
-
+  (rest-state--get-cached 'rest-state--posts
+                          'rest-api--read-post post-id))
 
 (provide 'rest-state)
