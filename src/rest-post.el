@@ -29,6 +29,7 @@
 (defun rest-post--read-formatted-post (id)
   (rest-post--format-post (rest-api--read-post id)))
 
+;;; TODO/FIXME wrong name for a public function
 (defun rest-post--show-buffer (id)
   (with-current-buffer (rest-utils--context-buffer-bottom rest-post-buffer-name)
     (font-lock-mode)

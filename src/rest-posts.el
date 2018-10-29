@@ -2,9 +2,10 @@
 (require 'rest-utils)
 (require 'rest-post)
 (require 'rest-expand)
+(require 'rest-open)
 
 (defconst rest-posts--buffer-name "*Posts*")
-(defconst rest-posts--id-property 'post-id)
+(defconst rest-posts--id-property 'post-id) ;;; this one could be removed
 
 (defun rest-posts--get-post-id (post)
   (cdr (assoc 'id post)))
@@ -42,26 +43,24 @@
     (rest-state--get-post-with-id
      (get-text-property (point) rest-posts--id-property)))))
 
+(defun rest-posts--get-current-id ()
+  (get-text-property (point) rest-posts--id-property))
+
 ;;; TODO/FIXME filter posts with nil users, remove the \n at the end of the list
+;;; TODO/FIXME also this function is a mess. Extract, like… 4 functions…
 (defun rest-posts--insert-posts ()
   "Insert *all* posts of the service in the page.
 
 Pagination would be a nice idea, but the API dosen't support it"
   (save-excursion 
-    (let* ((users '()))
+    (let ((users '()))
       (mapcar (lambda (post-as-string)
-                (rest-expand-insert-expandable-text post-as-string
-                                                    'rest-posts--get-body-for-post)
+                (let ((text (rest-open-propertize post-as-string
+                                                  (lambda ()
+                                                    (rest-post--show-buffer (rest-posts--get-current-id))))))
+                  (rest-expand-insert-expandable-text text 'rest-posts--get-body-for-post))
                 (redisplay))
               (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts))))))
-
-(defun rest-posts--get-current-id ()
-  (get-text-property (point) rest-posts--id-property))
-
-(defun rest-posts--open-post ()
-  (interactive)
-  (let ((id (rest-posts--get-current-id)))
-    (rest-post--show-buffer id)))
 
 (defun rest-posts--toggle-post ()
   (interactive)
@@ -69,9 +68,9 @@ Pagination would be a nice idea, but the API dosen't support it"
    (rest-expand-toggle-text)))
 
 (defun rest-posts--bind-keys ()
+  (rest-open-bind-key)  
   (local-set-key (kbd "r") 'rest-posts--show-buffer)
   (local-set-key (kbd "q") 'rest-utils--close-buffer)
-  (local-set-key (kbd "RET") 'rest-posts--open-post)
   (local-set-key (kbd "TAB") 'rest-posts--toggle-post))
 
 (defun rest-posts--wipe-old-buffer ()
