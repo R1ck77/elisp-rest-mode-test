@@ -46,6 +46,11 @@
 (defun rest-posts--get-current-id ()
   (get-text-property (point) rest-posts--id-property))
 
+(defun rest-posts--SOMETHING (formatted-post)
+  (rest-open-propertize formatted-post
+                        (lambda ()
+                          (rest-post--show-buffer (rest-posts--get-current-id)))))
+
 ;;; TODO/FIXME filter posts with nil users, remove the \n at the end of the list
 ;;; TODO/FIXME also this function is a mess. Extract, like… 4 functions…
 (defun rest-posts--insert-posts ()
@@ -54,13 +59,11 @@
 Pagination would be a nice idea, but the API dosen't support it"
   (save-excursion 
     (let ((users '()))
-      (mapcar (lambda (post-as-string)
-                (let ((text (rest-open-propertize post-as-string
-                                                  (lambda ()
-                                                    (rest-post--show-buffer (rest-posts--get-current-id))))))
-                  (rest-expand-insert-expandable-text text 'rest-posts--get-body-for-post))
+      (mapcar (lambda (text)
+                (rest-expand-insert-expandable-text text 'rest-posts--get-body-for-post)
                 (redisplay))
-              (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts))))))
+              (mapcar 'rest-posts--SOMETHING
+               (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts)))))))
 
 (defun rest-posts--toggle-post ()
   (interactive)
