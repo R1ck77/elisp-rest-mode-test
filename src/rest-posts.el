@@ -54,15 +54,16 @@
                         (lambda ()
                           (rest-post--show-buffer (rest-posts--get-current-id)))))
 
-;;; TODO/FIXME also this function is a mess. Extract, like… 4 functions…
+(defun rest-posts--insert-text-with-feedback (text)
+  (insert text)
+  (redisplay))
+
 (defun rest-posts--insert-posts ()
   "Insert *all* posts of the service in the page.
 
 Pagination would be a nice idea, but the API dosen't support it"
-  (save-excursion
-    (mapcar (lambda (x)
-              (insert x)
-              (redisplay))
+  (save-excursion ;;; TODO this is sort of funny =D and goes away next commit
+    (mapcar 'rest-posts--insert-text-with-feedback
             (mapcar 'rest-posts--add-expand-property
                     (mapcar 'rest-posts--add-open-property
                             (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts)))))))
