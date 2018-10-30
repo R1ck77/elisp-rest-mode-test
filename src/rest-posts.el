@@ -46,25 +46,26 @@
 (defun rest-posts--get-current-id ()
   (get-text-property (point) rest-posts--id-property))
 
-(defun rest-posts--SOMETHING (formatted-post)
+(defun rest-posts--add-expand-property (formatted-post)
+  (rest-expand-convert-to-expandable-text formatted-post 'rest-posts--get-body-for-post))
+
+(defun rest-posts--add-open-property (formatted-post)
   (rest-open-propertize formatted-post
                         (lambda ()
                           (rest-post--show-buffer (rest-posts--get-current-id)))))
 
-(defun rest-posts--SOMETHING-ELSE (formatted-post)
-  (rest-expand-insert-expandable-text formatted-post 'rest-posts--get-body-for-post)
-  (redisplay))
-
-;;; TODO/FIXME filter posts with nil users, remove the \n at the end of the list
 ;;; TODO/FIXME also this function is a mess. Extract, like… 4 functions…
 (defun rest-posts--insert-posts ()
   "Insert *all* posts of the service in the page.
 
 Pagination would be a nice idea, but the API dosen't support it"
   (save-excursion
-    (mapcar 'rest-posts--SOMETHING-ELSE
-            (mapcar 'rest-posts--SOMETHING
-                    (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts))))))
+    (mapcar (lambda (x)
+              (insert x)
+              (redisplay))
+            (mapcar 'rest-posts--add-expand-property
+                    (mapcar 'rest-posts--add-open-property
+                            (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts)))))))
 
 (defun rest-posts--toggle-post ()
   (interactive)
