@@ -36,4 +36,8 @@
   (let ((kill-buffer-query-functions nil))
     (kill-buffer)))
 
+(defun rest-utils-string-end (string)
+  (let ((string-length (length string)))
+    (substring-no-properties string (- string-length 1) string-length)))
+
 (provide 'rest-utils)
