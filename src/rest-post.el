@@ -1,10 +1,8 @@
 (require 'rest-state)
 (require 'rest-utils)
+(require 'rest-detail)
 
 (defconst rest-post-buffer-name "*Post Details*")
-
-(defun rest-post--bind-keys ()
-  (local-set-key (kbd "q") 'rest-utils--close-buffer))
 
 (defun rest-post--format-field (title-value)
   (concat (rest-utils--bold (car title-value))
@@ -31,12 +29,7 @@
 
 ;;; TODO/FIXME wrong name for a public function
 (defun rest-post--show-buffer (id)
-  (with-current-buffer (rest-utils--context-buffer-bottom rest-post-buffer-name)
-    (font-lock-mode)
-    (insert (rest-post--read-formatted-post id))
-    (rest-utils--force-read-only)
-    (rest-post--bind-keys)))
+  (rest-detail-show rest-post-buffer-name
+                    (rest-post--read-formatted-post id)))
 
 (provide 'rest-post)
-
-
