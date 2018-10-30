@@ -58,15 +58,18 @@
   (insert text)
   (redisplay))
 
+(defun rest-posts--convert-post-data-to-interactive-text (post-data)
+  (rest-posts--insert-text-with-feedback
+   (rest-posts--add-expand-property
+    (rest-posts--add-open-property
+     (rest-posts--prepare-post-for-insertion post-data)))))
+
 (defun rest-posts--insert-posts ()
   "Insert *all* posts of the service in the page.
 
 Pagination would be a nice idea, but the API dosen't support it"
-  (save-excursion ;;; TODO this is sort of funny =D and goes away next commit
-    (mapcar 'rest-posts--insert-text-with-feedback
-            (mapcar 'rest-posts--add-expand-property
-                    (mapcar 'rest-posts--add-open-property
-                            (mapcar 'rest-posts--prepare-post-for-insertion (rest-api--read-posts)))))))
+  (save-excursion
+    (mapcar 'rest-posts--convert-post-data-to-interactive-text (rest-api--read-posts))))
 
 (defun rest-posts--toggle-post ()
   (interactive)
