@@ -1,11 +1,11 @@
 (require 'rest-state)
-(require 'rest-utils)
 (require 'rest-detail)
+(require 'rest-text)
 
 (defconst rest-post-buffer-name "*Post Details*")
 
 (defun rest-post--format-field (title-value)
-  (concat (rest-utils--bold (car title-value))
+  (concat (rest-text-bold (car title-value))
           (elt title-value 1)))
 
 (defun rest-post--username-from-user-id (user-id)

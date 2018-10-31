@@ -1,5 +1,5 @@
 (require 'rest-state)
-(require 'rest-utils)
+(require 'rest-text)
 (require 'rest-post)
 (require 'rest-expand)
 (require 'rest-open)
@@ -19,11 +19,11 @@
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
          (user-name (cdr (assoc 'name user-for-id)))
          (title (cdr (assoc 'title post))))
-    (concat (rest-utils--bold "*")
+    (concat (rest-text-bold "*")
             " id:"
-            (rest-utils--bold (number-to-string id))
+            (rest-text-bold (number-to-string id))
             " <"
-            (rest-utils--yellow (substring user-name))
+            (rest-text-yellow (substring user-name))
             "> "
             title "\n")))
 
@@ -35,11 +35,11 @@
   "Format the post and add a text property with its ID"
   (let ((formatted-post (rest-posts--format-post-with-user post))
         (post-id (rest-posts--get-post-id post)))
-    (rest-utils--propertize-text formatted-post
+    (rest-text-propertize-text formatted-post
                                  rest-posts--id-property post-id)))
 
 (defun rest-posts--get-body-for-post ()
-  (rest-utils--grey
+  (rest-text-grey
    (rest-posts--get-body
     (rest-state--get-post-with-id
      (get-text-property (point) rest-posts--id-property)))))

@@ -1,10 +1,11 @@
+(require 'rest-text)
 
 (defconst rest-open--tag-function-property 'rest-open--tag-function)
 
 (defun rest-open-propertize (string f)
   "Tag the string to invoke the function f on enter"
-  (rest-utils--propertize-text string
-                               rest-open--tag-function-property f))
+  (rest-text-propertize-text string
+                             rest-open--tag-function-property f))
 
 (defun rest-open--get-tag ()
   (get-text-property (point) rest-open--tag-function-property))
