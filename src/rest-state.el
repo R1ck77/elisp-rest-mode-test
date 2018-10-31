@@ -15,10 +15,10 @@
         (nconc cache (list (cons id value)))
         value))))
 
-(defun rest-state--get-user-with-id (user-id)
-  (rest-state--get-cached rest-state--users 'rest-api--read-user user-id))
+(defun rest-state-get-user-with-id (user-id)
+  (rest-state--get-cached rest-state--users 'rest-api-read-user user-id))
 
-(defun rest-state--get-post-with-id (post-id)
-  (rest-state--get-cached rest-state--posts 'rest-api--read-post post-id))
+(defun rest-state-get-post-with-id (post-id)
+  (rest-state--get-cached rest-state--posts 'rest-api-read-post post-id))
 
 (provide 'rest-state)

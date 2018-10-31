@@ -17,13 +17,13 @@
   (let ((url-request-method "GET"))    
     (rest-api--json-request (format "%s://%s%s" schema host path))))
 
-(defun rest-api--read-posts ()
+(defun rest-api-read-posts ()
   (rest-api--request "/posts"))
 
-(defun rest-api--read-user (user-id)
+(defun rest-api-read-user (user-id)
   (rest-api--request (format "/users/%d" user-id)))
 
-(defun rest-api--read-post (post-id)
+(defun rest-api-read-post (post-id)
   (rest-api--request (format "/posts/%d" post-id)))
 
 (provide 'rest-api)

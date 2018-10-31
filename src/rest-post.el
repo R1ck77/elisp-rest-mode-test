@@ -9,7 +9,7 @@
           (elt title-value 1)))
 
 (defun rest-post--username-from-user-id (user-id)
-  (cdr (assoc 'name (rest-state--get-user-with-id user-id))))
+  (cdr (assoc 'name (rest-state-get-user-with-id user-id))))
 
 (defun rest-post--data-to-printable-lines (post-data)
   (nconc
@@ -25,7 +25,7 @@
               ""))
 
 (defun rest-post--read-formatted-post (id)
-  (rest-post--format-post (rest-api--read-post id)))
+  (rest-post--format-post (rest-state-get-post-with-id id)))
 
 ;;; TODO/FIXME wrong name for a public function
 (defun rest-post--show-buffer (id)

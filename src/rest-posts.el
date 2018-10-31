@@ -1,3 +1,4 @@
+(require 'rest-api)
 (require 'rest-state)
 (require 'rest-text)
 (require 'rest-post)
@@ -29,7 +30,7 @@
 
 (defun rest-posts--format-post-with-user (post)
   "Format the post representation using the caching version of the get-user function"
-  (rest-posts--format-post post 'rest-state--get-user-with-id))
+  (rest-posts--format-post post 'rest-state-get-user-with-id))
 
 (defun rest-posts--prepare-post-for-insertion (post)
   "Format the post and add a text property with its ID"
@@ -41,7 +42,7 @@
 (defun rest-posts--get-body-for-post ()
   (rest-text-grey
    (rest-posts--get-body
-    (rest-state--get-post-with-id
+    (rest-state-get-post-with-id
      (get-text-property (point) rest-posts--id-property)))))
 
 (defun rest-posts--get-current-id ()
@@ -70,7 +71,7 @@
 
 Pagination would be a nice idea, but the API dosen't support it"
   (save-excursion
-    (mapcar 'rest-posts--convert-post-data-to-interactive-text (rest-api--read-posts))))
+    (mapcar 'rest-posts--convert-post-data-to-interactive-text (rest-api-read-posts))))
 
 (defun rest-posts-show-buffer ()
   (rest-list-show rest-posts--buffer-name 'rest-posts--insert-posts))
