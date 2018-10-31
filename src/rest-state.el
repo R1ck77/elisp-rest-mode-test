@@ -3,7 +3,7 @@
 (defvar rest-state--users nil)
 (defvar rest-state--posts nil)
 
-(defun rest-state--init ()
+(defun rest-state-init ()
   ;;; (nil. nil) necessary to make nconc work. assoc doesn't care
   (setq rest-state--users '(nil . nil))
   (setq rest-state--posts '(nil . nil)))

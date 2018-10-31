@@ -1,17 +1,26 @@
 (require 'rest-utils)
 
-(defun rest-list--bind-keys ()
-  (rest-open-bind-key)  
-  (local-set-key (kbd "r") 'rest-posts--show-buffer) ;;; !!!
-  (local-set-key (kbd "q") 'rest-utils--close-buffer)
-  (local-set-key (kbd "TAB") 'rest-posts--toggle-post)) ;;; !!!!
+(defun rest-list--toggle-line ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (rest-expand-toggle-text)))
 
-(defun rest-list-show (buffer-name )
+(defun rest-list--bind-keys (refresh-action)
+  (rest-open-bind-key)  
+  (local-set-key (kbd "r") refresh-action)
+  (local-set-key (kbd "q") 'rest-utils--close-buffer)
+  (local-set-key (kbd "TAB") 'rest-list--toggle-line))
+
+(defun rest-list-show (buffer-name content-function)
   (rest-utils--wipe-buffer-if-present buffer-name)
   (switch-to-buffer buffer-name)
   (font-lock-mode)
-  (rest-posts--insert-posts)  ;;; TODO/FIXME insert an error message if posts can't be read
+  (funcall content-function)
   (rest-utils--force-read-only)
-  (rest-list--bind-keys))
+  (lexical-let ((buffer-name buffer-name)
+                (content-function))
+   (rest-list--bind-keys (lambda ()
+                           (interactive)
+                           (rest-list-show buffer-name content-function)))))
 
 (provide 'rest-list)

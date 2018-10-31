@@ -3,7 +3,7 @@
 
 (defun rest ()
   (interactive)
-  (rest-state--init)
-  (rest-posts--show-buffer))
+  (rest-state-init)
+  (rest-posts-show-buffer))
 
 (provide 'rest)
