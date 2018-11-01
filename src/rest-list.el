@@ -1,4 +1,5 @@
 (require 'rest-utils)
+(require 'rest-state)
 
 (defun rest-list--toggle-line ()
   (interactive)
@@ -22,6 +23,7 @@
                 (content-function content-function))
    (rest-list--bind-keys (lambda ()
                            (interactive)
+                           (rest-state-init)
                            (rest-list-show buffer-name content-function)))))
 
 (provide 'rest-list)
