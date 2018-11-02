@@ -4,14 +4,12 @@
 (defvar rest-state--posts nil)
 
 (defmacro rest-state--create-cached-getter (cache function)
-  (let ((cached (make-symbol "cached"))
-        (value (make-symbol "value")))    
+  (let ((value (make-symbol "value")))    
     `(lambda (id)
-       (let ((,cached (alist-get id ,cache)))
-         (or ,cached
-             (let ((,value (funcall ,function id)))
-               (setq ,cache (cons (cons id ,value) ,cache))
-               ,value))))))
+       (or (alist-get id ,cache)
+           (let ((,value (funcall ,function id)))
+             (setq ,cache (cons (cons id ,value) ,cache))
+             ,value)))))
 
 (defun rest-state-get-user-with-id (id))
 (defun rest-state-get-post-with-id (id))
