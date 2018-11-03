@@ -4,7 +4,7 @@
 
 (defun rest-open-propertize (string f)
   "Tag the string to invoke the function f on enter"
-  (rest-text-propertize-text string
+  (rest-text-propertize-text-light string
                              rest-open--tag-function-property f))
 
 (defun rest-open--get-tag ()

@@ -7,26 +7,6 @@ Overrides pre-existing properties"
   (put-text-property 0 (length string) property value string)
   string)
 
-(defun rest-text-propertize-text-light (string property value)
-    "Add the property to the whole string passed as argument
-
-Keeps the old values of the properties, if already present"
-    (error "I didn't define this"))
-
-(defun rest-text-bold (string)
-  (put-text-property 0 (length string) 'font-lock-face 'bold string)
-  string)
-
-(defun rest-text-colorize (string color)
-  (put-text-property 0 (length string) 'font-lock-face (list ':foreground color) string)
-  string)
-
-(defun rest-text-yellow (string)
-  (rest-text-colorize string "yellow"))
-
-(defun rest-text-grey (string)
-  (rest-text-colorize string "gray"))
-
 (defun rest-text--get-head-property-change (property string)
   (let ((at-0 (get-text-property 0 property string)))
     (if at-0
@@ -60,5 +40,28 @@ Keeps the old values of the properties, if already present"
              (put-text-property (car range) (elt range 1)  property (elt range 2) string))
            values)
   string)
+
+(defun rest-text-propertize-text-light (string property value)
+    "Add the property to the whole string passed as argument
+
+Keeps the old values of the properties, if already present"
+    (let ((old-properties (rest-text-get-property-ranges property string)))
+      (rest-text-propertize-text string property value)
+      (rest-text-apply-ranges string property old-properties)
+      string))
+
+(defun rest-text-bold (string)
+  (put-text-property 0 (length string) 'font-lock-face 'bold string)
+  string)
+
+(defun rest-text-colorize (string color)
+  (put-text-property 0 (length string) 'font-lock-face (list ':foreground color) string)
+  string)
+
+(defun rest-text-yellow (string)
+  (rest-text-colorize string "yellow"))
+
+(defun rest-text-grey (string)
+  (rest-text-colorize string "gray"))
 
 (provide 'rest-text)
