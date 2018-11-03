@@ -24,7 +24,11 @@
             " id:"
             (rest-text-bold (number-to-string id))
             " <"
-            (rest-text-yellow (substring user-name))
+            (rest-open-propertize (rest-text-yellow (substring user-name))
+                                  (lambda ()
+                                    (message "** I should show the author page now ***")
+                                    ;(rest-author-show-author (cdr (assoc 'userId post)))
+                                    ))
             "> "
             title "\n")))
 
