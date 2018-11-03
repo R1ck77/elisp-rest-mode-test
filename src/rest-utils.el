@@ -35,11 +35,15 @@ The body is executed only if at least one of the let forms is not nil"
 (defmacro rest-utils-while-let (cond-block &rest body)
   "A while construct mixed with a let"
   (declare (indent defun))
-  (let ((variable (car cond-block)))
-    `(let (,cond-block)
+  (let ((variable (car cond-block))
+        (condition (cadr cond-block))
+        (result (make-symbol "result")))
+    `(let (,cond-block
+           (,result nil))
        (while ,variable
-           ,@body))))
-
-
+         (setq ,result (progn
+                         ,@body))
+         (setq ,variable ,condition))
+       ,result)))
 
 (provide 'rest-utils)
