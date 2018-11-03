@@ -22,4 +22,24 @@
   (let ((string-length (length string)))
     (substring-no-properties string (- string-length 1) string-length)))
 
+(defmacro rest-utils-let-when (def-block &rest body)
+  "A when construct that binds the conditions to symbols
+
+The body is executed only if at least one of the let forms is not nil"
+  (declare (indent defun))
+  (let ((variables (seq-map 'car def-block)))
+    `(let ,def-block
+       (if (or ,@variables)
+           ,@body))))
+
+(defmacro rest-utils-while-let (cond-block &rest body)
+  "A while construct mixed with a let"
+  (declare (indent defun))
+  (let ((variable (car cond-block)))
+    `(let (,cond-block)
+       (while ,variable
+           ,@body))))
+
+
+
 (provide 'rest-utils)
