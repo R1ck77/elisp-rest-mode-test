@@ -5,6 +5,7 @@
 (require 'rest-expand)
 (require 'rest-open)
 (require 'rest-list)
+(require 'rest-author)
 
 (defconst rest-posts--buffer-name "*Posts*")
 (defconst rest-posts--id-property 'post-id) ;;; this one could be removed
@@ -25,10 +26,9 @@
             (rest-text-bold (number-to-string id))
             " <"
             (rest-open-propertize (rest-text-yellow (substring user-name))
-                                  (lambda ()
-                                    (message "** I should show the author page now ***")
-                                    ;(rest-author-show-author (cdr (assoc 'userId post)))
-                                    ))
+                                  (lexical-let ((post post))
+                                    (lambda ()                      
+                                      (rest-author-show-author (cdr (assoc 'userId post))))))
             "> "
             title "\n")))
 
