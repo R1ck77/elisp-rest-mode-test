@@ -1,26 +1,28 @@
 (require 'rest-state)
 (require 'rest-detail)
-(require 'rest-text)
 
 (defconst rest-post-buffer-name "*Post Details*")
 
-(defun rest-post--format-field (title-value)
-  (concat (rest-text-bold (car title-value))
-          (elt title-value 1)))
+(defconst rest-post--column-size 8)
 
 (defun rest-post--username-from-user-id (user-id)
   (cdr (assoc 'name (rest-state-get-user-with-id user-id))))
 
+(defun rest-post--format-field (title-value)
+  (rest-detail-format-simple (car title-value)
+                             (cadr title-value)
+                             rest-post--column-size))
+
 (defun rest-post--data-to-printable-lines (post-data)
   (nconc
-   (seq-map 'rest-post--format-field (list (list "title  " (cdr (assoc 'title post-data)))
-                                           (list "author " (rest-post--username-from-user-id (cdr (assoc 'userId post-data))))))
+   (seq-map 'rest-post--format-field (list (list "title" (cdr (assoc 'title post-data)))
+                                           (list "author" (rest-post--username-from-user-id (cdr (assoc 'userId post-data))))))
    (list (concat "\n"
                  (cdr (assoc 'body post-data))))))
 
 (defun rest-post--format-post (post-data)
   (seq-reduce (lambda (acc line)
-                (concat acc line "\n"))
+                (concat acc line))
               (rest-post--data-to-printable-lines post-data)
               ""))
 
