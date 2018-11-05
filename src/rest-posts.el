@@ -58,7 +58,7 @@
 (defun rest-posts--add-open-property (formatted-post)
   (rest-open-propertize formatted-post
                         (lambda ()
-                          (rest-post--show-buffer (rest-posts--get-current-id)))))
+                          (rest-post-show-buffer (rest-posts--get-current-id)))))
 
 (defun rest-posts--insert-text-with-feedback (text)
   (insert text)

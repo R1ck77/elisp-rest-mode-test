@@ -22,8 +22,7 @@
   (rest-detail-format-data (rest-state-get-post-with-id id)
                            rest-detail--template))
 
-;;; TODO/FIXME wrong name for a public function
-(defun rest-post--show-buffer (id)
+(defun rest-post-show-buffer (id)
   (rest-detail-show rest-post-buffer-name
                     (rest-post--read-formatted-post id)))
 

@@ -12,12 +12,6 @@
         (cons 'email (rest-detail-generate-plain-formatter "Email" rest-author--column-size))
         (cons 'website (rest-detail-generate-plain-formatter "Website" rest-author--column-size))))
 
-(defun rest-author--print (author-data)
-  (let ((result ""))
-    (dolist (cell author-data)
-      (setq result (concat result (format "%s\n" cell))))
-    result))
-
 (defun rest-author--read-formatted-author (author-id)
   (rest-detail-format-data (rest-state-get-user-with-id author-id)
                            rest-author--template))
