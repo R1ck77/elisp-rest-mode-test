@@ -38,7 +38,9 @@
                 (getter getter))
     (rest-detail-generate-indirect-plain-formatter title
                                                    (lambda (field-content)
-                                                     (rest-open-propertize (rest-text-yellow (funcall getter field-content)) callback))
+                                                     (lexical-let ((field-content field-content))
+                                                       (rest-open-propertize (rest-text-yellow (funcall getter field-content))
+                                                                             (lambda () (funcall callback field-content)))))
                                                    padding)))
 
 (defun rest-detail--not-nilp (x)

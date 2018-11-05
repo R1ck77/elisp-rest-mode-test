@@ -1,6 +1,7 @@
 (require 'rest-state)
 (require 'rest-detail)
 (require 'rest-open)
+(require 'rest-author)
 
 (defconst rest-post-buffer-name "*Post Details*")
 
@@ -11,7 +12,7 @@
                                                                                               (lambda (field-content)
                                                                                                 (substring (rest-post--username-from-user-id (cdr field-content))))
                                                                                               rest-post--column-size
-                                                                                              (lambda () (print "SUCCESS!"))))
+                                                                                              (lambda (field-content) (rest-author-show-author (cdr field-content)))))
                                       (cons 'body (rest-detail-generate-body-formatter))))
 
 (defun rest-post--username-from-user-id (user-id)
