@@ -9,7 +9,8 @@
                                       (cons 'userId (rest-detail-generate-indirect-plain-formatter "author"
                                                                                                    (lambda (field-content)
                                                                                                      (rest-post--username-from-user-id (cdr field-content)))
-                                                                                                   rest-post--column-size))))
+                                                                                                   rest-post--column-size))
+                                      (cons 'body (rest-detail-generate-body-formatter))))
 
 (defun rest-post--username-from-user-id (user-id)
   (cdr (assoc 'name (rest-state-get-user-with-id user-id))))

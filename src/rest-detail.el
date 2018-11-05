@@ -17,8 +17,8 @@
 (defun rest-detail-generate-indirect-plain-formatter (title getter padding)
   "Return a formatter that prints the fields as a pair like 'a   : getter(field)'"
   (lexical-let ((title title)
-                (padding padding)
-                (getter getter))
+                (getter getter)
+                (padding padding))
     (lambda (field-content)
       (let ((content (funcall getter field-content)))
         (rest-detail-format-simple title content padding)))))
@@ -27,11 +27,10 @@
   (lambda (field-content)
     (rest-detail-format-body (cdr field-content))))
 
-
 (defun rest-detail--convert-field (field-content formatters)
   (let ((formatter (alist-get (car field-content) formatters)))
     (if formatter
-        (funcall formatter (car field-content) (car field-content))
+        (funcall formatter field-content)
       "")))
 
 (defun rest-detail-format-data (data formatters)
