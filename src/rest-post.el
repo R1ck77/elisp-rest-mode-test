@@ -15,23 +15,9 @@
 (defun rest-post--username-from-user-id (user-id)
   (cdr (assoc 'name (rest-state-get-user-with-id user-id))))
 
-(defun rest-post--format-field (title-value)
-  (rest-detail-format-simple (car title-value)
-                             (cadr title-value)
-                             rest-post--column-size))
-
-(defun rest-post--data-to-printable-lines (post-data)
-  (nconc
-   (seq-map 'rest-post--format-field (list (list "title" (cdr (assoc 'title post-data)))
-                                           (list "author" (rest-post--username-from-user-id (cdr (assoc 'userId post-data))))))
-   (list (concat "\n"
-                 (cdr (assoc 'body post-data))))))
-
-(defun rest-post--format-post (post-data)
-  (rest-detail-format-data post-data rest-detail--template))
-
 (defun rest-post--read-formatted-post (id)
-  (rest-post--format-post (rest-state-get-post-with-id id)))
+  (rest-detail-format-data (rest-state-get-post-with-id id)
+                           rest-detail--template))
 
 ;;; TODO/FIXME wrong name for a public function
 (defun rest-post--show-buffer (id)
