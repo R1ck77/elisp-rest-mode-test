@@ -1,5 +1,6 @@
 (require 'rest-utils)
 (require 'rest-text)
+(require 'rest-open)
 
 (defun rest-detail-format-simple (title value padding)
   (format (concat "%-" (number-to-string padding)  "s %s\n") (rest-text-bold title) value))
@@ -8,6 +9,7 @@
   (concat "\n" content "\n"))
 
 (defun rest-detail--bind-keys ()
+  (rest-open-bind-key)
   (local-set-key (kbd "q") 'rest-utils-close-buffer))
 
 (defun rest-detail-generate-plain-formatter (title padding)
@@ -29,7 +31,15 @@
 
 (defun rest-detail--convert-field (field-formatter-data)
   (funcall (cadr field-formatter-data) (cons (car field-formatter-data)
-                                           (elt field-formatter-data 2))))
+                                             (elt field-formatter-data 2))))
+
+(defun rest-detail-generate-clickable-formatter (title getter padding callback)
+  (lexical-let ((callback callback)
+                (getter getter))
+    (rest-detail-generate-indirect-plain-formatter title
+                                                   (lambda (field-content)
+                                                     (rest-open-propertize (rest-text-yellow (funcall getter field-content)) callback))
+                                                   padding)))
 
 (defun rest-detail--not-nilp (x)
   (not (null x)))

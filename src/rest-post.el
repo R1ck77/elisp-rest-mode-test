@@ -1,15 +1,17 @@
 (require 'rest-state)
 (require 'rest-detail)
+(require 'rest-open)
 
 (defconst rest-post-buffer-name "*Post Details*")
 
 (defconst rest-post--column-size 8)
 
 (defconst rest-detail--template (list (cons 'title (rest-detail-generate-plain-formatter "title" rest-post--column-size))
-                                      (cons 'userId (rest-detail-generate-indirect-plain-formatter "author"
-                                                                                                   (lambda (field-content)
-                                                                                                     (rest-post--username-from-user-id (cdr field-content)))
-                                                                                                   rest-post--column-size))
+                                      (cons 'userId (rest-detail-generate-clickable-formatter "author"
+                                                                                              (lambda (field-content)
+                                                                                                (substring (rest-post--username-from-user-id (cdr field-content))))
+                                                                                              rest-post--column-size
+                                                                                              (lambda () (print "SUCCESS!"))))
                                       (cons 'body (rest-detail-generate-body-formatter))))
 
 (defun rest-post--username-from-user-id (user-id)
