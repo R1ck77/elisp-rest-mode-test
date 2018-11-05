@@ -7,13 +7,22 @@
 
 (defconst rest-post--column-size 8)
 
-(defconst rest-detail--template (list (cons 'title (rest-detail-generate-plain-formatter "title" rest-post--column-size))
-                                      (cons 'userId (rest-detail-generate-clickable-formatter "author"
-                                                                                              (lambda (field-content)
-                                                                                                (substring (rest-post--username-from-user-id (cdr field-content))))
-                                                                                              rest-post--column-size
-                                                                                              (lambda (field-content) (rest-author-show-author (cdr field-content)))))
-                                      (cons 'body (rest-detail-generate-body-formatter))))
+(defconst rest-detail--title-formatter (rest-detail-generate-plain-formatter "title" rest-post--column-size))
+
+(defconst rest-detail--user-formatter (rest-detail-generate-clickable-formatter "author"
+                                                                                (lambda (field-content)
+                                                                                  (substring
+                                                                                   (rest-post--username-from-user-id (cdr field-content))))
+                                                                                rest-post--column-size
+                                                                                (lambda (field-content)
+                                                                                  (rest-author-show-author (cdr field-content)))))
+
+
+(defconst rest-detail--body-formatter (rest-detail-generate-body-formatter))
+
+(defconst rest-detail--template (list (cons 'title rest-detail--title-formatter)
+                                      (cons 'userId rest-detail--user-formatter)
+                                      (cons 'body rest-detail--body-formatter)))
 
 (defun rest-post--username-from-user-id (user-id)
   (cdr (assoc 'name (rest-state-get-user-with-id user-id))))
