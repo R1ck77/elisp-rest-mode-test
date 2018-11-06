@@ -10,7 +10,13 @@
         (cons 'username (rest-detail-generate-plain-formatter "User" rest-author--column-size))
         (cons 'phone (rest-detail-generate-plain-formatter "Phone" rest-author--column-size))
         (cons 'email (rest-detail-generate-plain-formatter "Email" rest-author--column-size))
-        (cons 'website (rest-detail-generate-plain-formatter "Website" rest-author--column-size))))
+        (cons 'website (rest-detail-generate-plain-formatter "Website" rest-author--column-size))
+        (cons 'address (rest-detail-generate-expandable-formatter "Address"
+                                                                  (lambda (x)
+                                                                    "side text")
+                                                                  rest-author--column-size                                                                  
+                                                                  (lambda (field-content)
+                                                                    "foo\nbar\nbaz")))))
 
 (defun rest-author--read-formatted-author (author-id)
   (rest-detail-format-data (rest-state-get-user-with-id author-id)
