@@ -7,9 +7,9 @@
 
 (defconst rest-post--column-size 8)
 
-(defconst rest-detail--title-formatter (rest-detail-generate-plain-formatter "title" rest-post--column-size))
+(defconst rest-post--title-formatter (rest-detail-generate-plain-formatter "title" rest-post--column-size))
 
-(defconst rest-detail--user-formatter (rest-detail-generate-clickable-formatter "author"
+(defconst rest-post--user-formatter (rest-detail-generate-clickable-formatter "author"
                                                                                 (lambda (field-content)
                                                                                   (substring
                                                                                    (rest-post--username-from-user-id (cdr field-content))))
@@ -18,18 +18,18 @@
                                                                                   (rest-author-show-author (cdr field-content)))))
 
 
-(defconst rest-detail--body-formatter (rest-detail-generate-body-formatter))
+(defconst rest-post--body-formatter (rest-detail-generate-body-formatter))
 
-(defconst rest-detail--template (list (cons 'title rest-detail--title-formatter)
-                                      (cons 'userId rest-detail--user-formatter)
-                                      (cons 'body rest-detail--body-formatter)))
+(defconst rest-post--template (list (cons 'title rest-post--title-formatter)
+                                      (cons 'userId rest-post--user-formatter)
+                                      (cons 'body rest-post--body-formatter)))
 
 (defun rest-post--username-from-user-id (user-id)
   (cdr (assoc 'name (rest-state-get-user-with-id user-id))))
 
 (defun rest-post--read-formatted-post (id)
   (rest-detail-format-data (rest-state-get-post-with-id id)
-                           rest-detail--template))
+                           rest-post--template))
 
 (defun rest-post-show-buffer (id)
   (rest-detail-show rest-post-buffer-name
