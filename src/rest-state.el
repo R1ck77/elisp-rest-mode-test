@@ -24,4 +24,6 @@
         (rest-state--create-cached-getter rest-state--posts
                                           'rest-api-read-post)))
 
+(rest-state-init)
+
 (provide 'rest-state)
