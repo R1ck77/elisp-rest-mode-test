@@ -13,7 +13,7 @@
         (cons 'website (rest-detail-generate-plain-formatter "Website" rest-author--column-size))
         (cons 'address (rest-detail-generate-expandable-formatter "Address"
                                                                   (lambda (x)
-                                                                    "side text")
+                                                                    "")
                                                                   rest-author--column-size                                                                  
                                                                   (lambda (field-content)
                                                                     "foo\nbar\nbaz")))))
