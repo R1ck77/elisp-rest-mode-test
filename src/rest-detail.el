@@ -43,6 +43,16 @@
                                                                              (lambda () (funcall callback field-content)))))
                                                    padding)))
 
+(defun rest-detail-generate-expandable-formatter (title getter padding text-provider)
+  (lexical-let ((text-provider text-provider)
+                (base-formatter (rest-detail-generate-indirect-plain-formatter title getter padding)))
+    (lambda (field-content)
+      (lexical-let ((normal-entry (funcall base-formatter field-content))
+                    (field-content field-content))
+        (rest-expand-convert-to-expandable-text normal-entry                                                
+                                                (lambda ()
+                                                  (funcall text-provider field-content)))))))
+
 (defun rest-detail--not-nilp (x)
   (not (null x)))
 
@@ -70,6 +80,7 @@ nil is returned if there is no data for the formatter"
     (font-lock-mode)
     (insert post-content)
     (rest-utils-force-read-only)
+    (rest-expand-bind-keys)  ;;; TODO/FIXME this is not the place, I should have a callback of sorts
     (rest-detail--bind-keys)))
 
 (provide 'rest-detail)
