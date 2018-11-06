@@ -53,6 +53,14 @@
                                                 (lambda ()
                                                   (funcall text-provider field-content)))))))
 
+(defun rest-detail-generate-hierarchic-formatter (title getter padding data-provider templates)
+  (lexical-let ((data-provider data-provider)
+                (templates templates))
+    (rest-detail-generate-expandable-formatter title getter padding
+                                               (lambda (field-content)
+                                                 (rest-detail-format-data (funcall data-provider field-content)
+                                                                          templates)))))
+
 (defun rest-detail--not-nilp (x)
   (not (null x)))
 

@@ -1,4 +1,4 @@
 * Add a changing header for expandable text
 * Make the formatted text hierarchic
-* create a hierarchic formatter that takes a template and creates sub-entries
 * hierarchic expandable text (hard?)
+  - not necessarily: add a depth value to the string, depending on the levels already there
