@@ -1,16 +1,11 @@
 (require 'rest-utils)
 (require 'rest-state)
 
-(defun rest-list--toggle-line ()
-  (interactive)
-  (let ((inhibit-read-only t))
-    (rest-expand-toggle-text)))
-
 (defun rest-list--bind-keys (refresh-action)
-  (rest-open-bind-key)  
+  (rest-open-bind-key)
+  (rest-expand-bind-keys)
   (local-set-key (kbd "r") refresh-action)
-  (local-set-key (kbd "q") 'rest-utils-close-buffer)
-  (local-set-key (kbd "TAB") 'rest-list--toggle-line))
+  (local-set-key (kbd "q") 'rest-utils-close-buffer))
 
 (defun rest-list-show (buffer-name content-function)
   (rest-utils-wipe-buffer-if-present buffer-name)
