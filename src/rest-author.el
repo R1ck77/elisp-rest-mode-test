@@ -4,10 +4,11 @@
 (defconst rest-author--buffer-name "*Author*")
 
 (defconst rest-author--column-size 8)
+(defconst rest-author--indent-size 2)
 
 (defconst rest-author--address-template
-  (list (cons 'street (rest-detail-generate-plain-formatter "Street" rest-author--column-size))
-        (cons 'city (rest-detail-generate-plain-formatter "City" rest-author--column-size))))
+  (list (cons 'street (rest-detail-generate-plain-formatter "Street" rest-author--column-size rest-author--indent-size))
+        (cons 'city (rest-detail-generate-plain-formatter "City" rest-author--column-size rest-author--indent-size))))
 
 (defconst rest-author--template
   (list (cons 'name (rest-detail-generate-plain-formatter "Name" rest-author--column-size))
