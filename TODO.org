@@ -1,3 +1,4 @@
 * hierarchic expandable text (hard?)
   - not necessarily: add a depth value to the string, depending on the levels already there
 * Make the hierarchic formatter automatically decide the indentation level
+* the formatters let the format-simple function trickle everywhere. Make it customizable
