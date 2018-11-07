@@ -47,24 +47,28 @@
                                                    padding
                                                    indent)))
 
-(defun rest-detail-generate-expandable-formatter (title getter padding text-provider &optional indent)
+(defun rest-detail-generate-expandable-formatter (title getter padding text-provider &optional indent extended-getter)
   (lexical-let ((text-provider text-provider)
-                (base-formatter (rest-detail-generate-indirect-plain-formatter title getter padding indent)))
+                (base-formatter (rest-detail-generate-indirect-plain-formatter title getter padding indent))
+                (extended-formatter (rest-detail-generate-indirect-plain-formatter title (or extended-getter getter) padding indent)))
     (lambda (field-content)
       (lexical-let ((normal-entry (funcall base-formatter field-content))
+                    (expanded-entry (funcall extended-formatter field-content))
                     (field-content field-content))
         (rest-expand-convert-to-expandable-text normal-entry                                                
                                                 (lambda ()
-                                                  (funcall text-provider field-content)))))))
+                                                  (funcall text-provider field-content))
+                                                expanded-entry)))))
 
-(defun rest-detail-generate-hierarchic-formatter (title getter padding data-provider templates &optional indent)
+(defun rest-detail-generate-hierarchic-formatter (title getter padding data-provider templates &optional indent extended-getter)
   (lexical-let ((data-provider data-provider)
                 (templates templates))
     (rest-detail-generate-expandable-formatter title getter padding
                                                (lambda (field-content)
                                                  (rest-detail-format-data (funcall data-provider field-content)
                                                                           templates))
-                                               indent)))
+                                               indent
+                                               extended-getter)))
 
 (defun rest-detail--not-nilp (x)
   (not (null x)))
