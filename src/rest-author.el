@@ -17,12 +17,13 @@
         (cons 'email (rest-detail-generate-plain-formatter "Email" rest-author--column-size))
         (cons 'website (rest-detail-generate-plain-formatter "Website" rest-author--column-size))
         (cons 'address (rest-detail-generate-hierarchic-formatter "Address"
-                                                                  (lambda (x)
-                                                                    "")
+                                                                  (lambda (x) "[…]")
                                                                   rest-author--column-size
                                                                   (lambda (field-content)
                                                                     (cdr field-content))
-                                                                  rest-author--address-template))))
+                                                                  rest-author--address-template
+                                                                  0
+                                                                  (lambda (x) "")))))
 
 (defun rest-author--read-formatted-author (author-id)
   (rest-detail-format-data (rest-state-get-user-with-id author-id)
