@@ -64,4 +64,7 @@ Keeps the old values of the properties, if already present"
 (defun rest-text-grey (string)
   (rest-text-colorize string "gray"))
 
+(defun rest-text-red (string)
+  (rest-text-colorize string "red"))
+
 (provide 'rest-text)
