@@ -91,7 +91,8 @@ nil is returned if there is no data for the formatter"
 (defun rest-detail-show (buffer-name post-content)
   (with-current-buffer (rest-utils-context-buffer-bottom buffer-name)
     (font-lock-mode)
-    (insert post-content)
+    (save-excursion
+      (insert post-content))
     (rest-utils-force-read-only)
     (rest-expand-bind-keys)  ;;; TODO/FIXME this is not the place, I should have a callback of sorts
     (rest-detail--bind-keys)))
