@@ -21,8 +21,7 @@
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
          (user-name (cdr (assoc 'name user-for-id)))
          (title (cdr (assoc 'title post))))
-    (concat (rest-text-bold "*")
-            " id:"
+    (concat "id:"
             (rest-text-bold (number-to-string id))
             " <"
             (rest-open-propertize (rest-text-yellow (substring user-name))
@@ -34,14 +33,18 @@
 
 (defun rest-posts--format-post-with-user (post)
   "Format the post representation using the caching version of the get-user function"
-  (rest-posts--format-post post 'rest-state-get-user-with-id))
+  (seq-map (lambda (x) (concat x
+                    (rest-posts--format-post post 'rest-state-get-user-with-id)))
+       (list (rest-text-bold "+ ")
+             (rest-text-bold "- "))))
 
 (defun rest-posts--prepare-post-for-insertion (post)
   "Format the post and add a text property with its ID"
-  (let ((formatted-post (rest-posts--format-post-with-user post))
+  (let ((formatted-post-pair (rest-posts--format-post-with-user post))
         (post-id (rest-posts--get-post-id post)))
-    (rest-text-propertize-text formatted-post
-                                 rest-posts--id-property post-id)))
+    (seq-map (lambda (formatted-post)
+           (rest-text-propertize-text formatted-post rest-posts--id-property post-id))
+         formatted-post-pair)))
 
 (defun rest-posts--get-body-for-post ()
   (rest-text-grey
@@ -52,13 +55,18 @@
 (defun rest-posts--get-current-id ()
   (get-text-property (point) rest-posts--id-property))
 
-(defun rest-posts--add-expand-property (formatted-post)
-  (rest-expand-convert-to-expandable-text formatted-post 'rest-posts--get-body-for-post))
+;;; TODO/FIXME just a test, obviously: I can do fancier things with this
+(defun rest-posts--add-expand-property (formatted-post formatted-post-expanded )
+  (rest-expand-convert-to-expandable-text formatted-post
+                                          'rest-posts--get-body-for-post
+                                          formatted-post-expanded)) 
 
-(defun rest-posts--add-open-property (formatted-post)
-  (rest-open-propertize formatted-post
-                        (lambda ()
-                          (rest-post-show-buffer (rest-posts--get-current-id)))))
+(defun rest-posts--add-open-property (formatted-post-pair)
+  (seq-map (lambda (formatted-post)
+         (rest-open-propertize formatted-post
+                                        (lambda ()
+                                          (rest-post-show-buffer (rest-posts--get-current-id)))))
+       formatted-post-pair))
 
 (defun rest-posts--insert-text-with-feedback (text)
   (insert text)
@@ -66,8 +74,7 @@
 
 (defun rest-posts--convert-post-data-to-interactive-text (post-data)
   (rest-posts--insert-text-with-feedback
-   (rest-posts--add-expand-property
-    (rest-posts--add-open-property
+   (apply 'rest-posts--add-expand-property (rest-posts--add-open-property
      (rest-posts--prepare-post-for-insertion post-data)))))
 
 (defun rest-posts--insert-posts ()
