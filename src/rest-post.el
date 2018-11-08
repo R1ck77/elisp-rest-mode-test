@@ -2,23 +2,24 @@
 (require 'rest-detail)
 (require 'rest-open)
 (require 'rest-author)
+(require 'rest-fmt)
 
 (defconst rest-post-buffer-name "*Post Details*")
 
 (defconst rest-post--column-size 8)
 
-(defconst rest-post--title-formatter (rest-detail-generate-plain-formatter "title" rest-post--column-size))
+(defconst rest-post--title-formatter (rest-fmt-generate-plain-formatter "title" rest-post--column-size))
 
-(defconst rest-post--user-formatter (rest-detail-generate-clickable-formatter "author"
-                                                                                (lambda (field-content)
-                                                                                  (substring
-                                                                                   (rest-post--username-from-user-id (cdr field-content))))
-                                                                                rest-post--column-size
-                                                                                (lambda (field-content)
-                                                                                  (rest-author-show-author (cdr field-content)))))
+(defconst rest-post--user-formatter (rest-fmt-generate-clickable-formatter "author"
+                                                                           (lambda (field-content)
+                                                                             (substring
+                                                                              (rest-post--username-from-user-id (cdr field-content))))
+                                                                           rest-post--column-size
+                                                                           (lambda (field-content)
+                                                                             (rest-author-show-author (cdr field-content)))))
 
 
-(defconst rest-post--body-formatter (rest-detail-generate-body-formatter))
+(defconst rest-post--body-formatter (rest-fmt-generate-body-formatter))
 
 (defconst rest-post--template (list (cons 'title rest-post--title-formatter)
                                       (cons 'userId rest-post--user-formatter)
