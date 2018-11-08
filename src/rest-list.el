@@ -1,5 +1,7 @@
 (require 'rest-utils)
 (require 'rest-state)
+(require 'rest-open)
+(require 'rest-expand)
 
 (defun rest-list--bind-keys (refresh-action)
   (rest-open-bind-key)
