@@ -1,30 +1,45 @@
 (require 'rest-detail)
 
-(defun rest-fmt-format-simple (title value padding indent)
+(defun rest-fmt--format-body (content)
+  (concat "\n" content "\n"))
+
+(defun rest-fmt-generate-body-formatter ()
+  (lambda (field-content)
+    (rest-fmt--format-body (cdr field-content))))
+
+(defun rest-fmt--format-simple (title value padding indent)
   (concat
    (make-string indent ?\s)
    (format (concat "%-" (number-to-string padding)  "s %s\n") (rest-text-bold title) value)))
 
-(defun rest-fmt-format-body (content)
-  (concat "\n" content "\n"))
+(defun rest-fmt-generate-formatter (f &rest arguments)
+  (lexical-let ((f f)
+                (arguments arguments))
+    (lambda (field-pair)
+      (print (append (list field-pair) arguments))
+      (apply f (append (list field-pair) arguments)))))
+
+(defun rest-fmt-generate-indirect-formatter (f getter &rest arguments)
+  (lexical-let ((f f)
+                (getter getter)
+                (arguments arguments))
+    (rest-fmt-generate-formatter (lambda (field-pair &rest arguments)
+                                   (apply f (append (list (funcall getter field-pair)) arguments)))
+                                 arguments)))
+
+(defun rest-fmt-generate-indirect-plain-formatter (title getter &optional padding indent)
+  "Return a formatter that prints the fields as a pair like 'a   : getter(field)'"
+  (lexical-let ((title title)
+                (getter getter)
+                (padding (or padding 0))
+                (indent (or indent 0)))
+    (lambda (field-content)
+      (let ((content (funcall getter field-content)))
+        (rest-fmt--format-simple title content padding indent)))))
 
 (defun rest-fmt-generate-plain-formatter (title padding &optional indent)
   "Return a formatter that prints the field as a simple pair 'a   : b'"
   (rest-fmt-generate-indirect-plain-formatter title 'cdr padding indent))
-
-(defun rest-fmt-generate-indirect-plain-formatter (title getter padding &optional indent)
-  "Return a formatter that prints the fields as a pair like 'a   : getter(field)'"
-  (lexical-let ((title title)
-                (getter getter)
-                (padding padding)
-                (indent (or indent 0)))
-    (lambda (field-content)
-      (let ((content (funcall getter field-content)))
-        (rest-fmt-format-simple title content padding indent)))))
-
-(defun rest-fmt-generate-body-formatter ()
-  (lambda (field-content)
-    (rest-fmt-format-body (cdr field-content))))
 
 (defun rest-fmt-generate-clickable-formatter (title getter padding callback &optional indent)
   (lexical-let ((callback callback)
@@ -55,7 +70,7 @@
                 (templates templates))
     (rest-fmt-generate-expandable-formatter title getter padding
                                             (lambda (field-content)
-                                              (rest-fmt-format-data (funcall data-provider field-content)
+                                              (rest-detail-format-data (funcall data-provider field-content)
                                                                     templates))
                                             indent
                                             extended-getter)))
