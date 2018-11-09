@@ -12,19 +12,19 @@
    (make-string indent ?\s)
    (format (concat "%-" (number-to-string padding)  "s %s\n") (rest-text-bold title) value)))
 
-(defun rest-fmt-generate-formatter (f &rest arguments)
+(defun rest-fmt-generate-formatter (f &rest extra-args)
   (lexical-let ((f f)
-                (arguments arguments))
+                (extra-args extra-args))
     (lambda (field-pair)
-      (apply f (append (list field-pair) arguments)))))
+      (apply f (append (list field-pair) extra-args)))))
 
-(defun rest-fmt-generate-indirect-formatter (f getter &rest arguments)
+(defun rest-fmt-generate-indirect-formatter (f getter &rest extra-args)
   (lexical-let ((f f)
                 (getter getter)
-                (arguments arguments))
-    (rest-fmt-generate-formatter (lambda (field-pair &rest arguments)
-                                   (apply f (append (list (funcall getter field-pair)) arguments)))
-                                 arguments)))
+                (extra-args extra-args))
+    (rest-fmt-generate-formatter (lambda (field-pair &rest extra-args)
+                                   (apply f (append (list (funcall getter field-pair)) extra-args)))
+                                 extra-args)))
 
 (defun rest-fmt-generate-indirect-plain-formatter (title getter &optional padding indent)
   "Return a formatter that prints the fields as a pair like 'a   : getter(field)'"
@@ -35,6 +35,15 @@
 (defun rest-fmt-generate-plain-formatter (title padding &optional indent)
   "Return a formatter that prints the field as a simple pair 'a   : b'"
   (rest-fmt-generate-indirect-plain-formatter title 'cdr padding indent))
+
+(defun rest-fmt-generate-clickable-formatter (f getter callback &rest extra-args)
+  (rest-fmt-generate-indirect-formatter (lambda (content &rest extra-args)
+                                          ;;; TODO/FIXME
+                                          ;;; format with f and add the callback at this point!
+                                          ;;; Return a function of lambda
+                                          )
+                                        getter
+                                        extra-args))
 
 (defun rest-fmt-generate-clickable-formatter (title getter padding callback &optional indent)
   (lexical-let ((callback callback)
