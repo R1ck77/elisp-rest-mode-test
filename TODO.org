@@ -2,3 +2,4 @@
   - not necessarily: add a depth value to the string, depending on the levels already there
 * Make the hierarchic formatter automatically decide the indentation level
 * the formatters let the format-simple function trickle everywhere. Make it customizable
+* keep working on rest-fmt to keep it generic, also refactor it (it's ugly) and make it whole lexically bound

@@ -16,7 +16,6 @@
   (lexical-let ((f f)
                 (arguments arguments))
     (lambda (field-pair)
-      (print (append (list field-pair) arguments))
       (apply f (append (list field-pair) arguments)))))
 
 (defun rest-fmt-generate-indirect-formatter (f getter &rest arguments)
@@ -29,13 +28,15 @@
 
 (defun rest-fmt-generate-indirect-plain-formatter (title getter &optional padding indent)
   "Return a formatter that prints the fields as a pair like 'a   : getter(field)'"
-  (lexical-let ((title title)
-                (getter getter)
-                (padding (or padding 0))
-                (indent (or indent 0)))
-    (lambda (field-content)
-      (let ((content (funcall getter field-content)))
-        (rest-fmt--format-simple title content padding indent)))))
+  (rest-fmt-generate-indirect-formatter (lambda (content &rest other)
+                                          (let ((title (car other))
+                                                (padding (elt other 1))
+                                                (indent (elt other 2)))
+                                            (rest-fmt--format-simple title
+                                                                     content
+                                                                     padding
+                                                                     indent)))
+                                        getter title (or padding 0) (or indent 0)))
 
 (defun rest-fmt-generate-plain-formatter (title padding &optional indent)
   "Return a formatter that prints the field as a simple pair 'a   : b'"
