@@ -28,14 +28,8 @@
 
 (defun rest-fmt-generate-indirect-plain-formatter (title getter &optional padding indent)
   "Return a formatter that prints the fields as a pair like 'a   : getter(field)'"
-  (rest-fmt-generate-indirect-formatter (lambda (content &rest other)
-                                          (let ((title (car other))
-                                                (padding (elt other 1))
-                                                (indent (elt other 2)))
-                                            (rest-fmt--format-simple title
-                                                                     content
-                                                                     padding
-                                                                     indent)))
+  (rest-fmt-generate-indirect-formatter (lambda (content title padding indent)
+                                          (rest-fmt--format-simple title content padding indent))
                                         getter title (or padding 0) (or indent 0)))
 
 (defun rest-fmt-generate-plain-formatter (title padding &optional indent)
@@ -75,7 +69,5 @@
                                                                     templates))
                                             indent
                                             extended-getter)))
-
-
 
 (provide 'rest-fmt)
