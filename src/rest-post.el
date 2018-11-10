@@ -10,14 +10,13 @@
 
 (defconst rest-post--title-formatter (rest-fmt-generate-plain-formatter "title" rest-post--column-size))
 
-(defconst rest-post--user-formatter (rest-fmt-generate-clickable-formatter "author"
+(defconst rest-post--user-formatter (rest-fmt-generate-simple-clickable-formatter "author"
                                                                            (lambda (field-content)
                                                                              (substring
                                                                               (rest-post--username-from-user-id (cdr field-content))))
                                                                            rest-post--column-size
                                                                            (lambda (field-content)
                                                                              (rest-author-show-author (cdr field-content)))))
-
 
 (defconst rest-post--body-formatter (rest-fmt-generate-body-formatter))
 

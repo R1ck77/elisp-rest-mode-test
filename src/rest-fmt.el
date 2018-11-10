@@ -36,24 +36,24 @@
   "Return a formatter that prints the field as a simple pair 'a   : b'"
   (rest-fmt-generate-indirect-plain-formatter title 'cdr padding indent))
 
-;;; TODO/FIXME name shadowed!
 (defun rest-fmt-generate-clickable-formatter (f getter callback &rest extra-args)
   (lexical-let* ((f f)
+                 (getter getter)
                  (callback callback)
                  (format-function (lambda (content &rest extra-args)
-                                    (rest-open-propertize (apply f (append (list content) extra-args)) callback))))
-    (apply 'rest-fmt-generate-indirect-formatter (append (list format-function  getter) extra-args))))
+                                    (lexical-let ((content content))
+                                      (rest-open-propertize (apply f (append (list (funcall getter content)) extra-args))
+                                                            (lambda ()
+                                                              (funcall callback content)))))))
+    (apply 'rest-fmt-generate-formatter (append (list format-function) extra-args))))
 
-(defun rest-fmt-generate-clickable-formatter (title getter padding callback &optional indent)
-  (lexical-let ((callback callback)
-                (getter getter))
-    (rest-fmt-generate-indirect-plain-formatter title
-                                                (lambda (field-content)
-                                                  (lexical-let ((field-content field-content))
-                                                    (rest-open-propertize (rest-text-yellow (funcall getter field-content))
-                                                                          (lambda () (funcall callback field-content)))))
-                                                padding
-                                                indent)))
+(defun rest-fmt-generate-simple-clickable-formatter (title getter padding callback &optional indent)
+  (rest-fmt-generate-clickable-formatter (lambda (content title padding indent)
+                                           (rest-fmt--format-simple title
+                                                                    (rest-text-yellow (format "<%s>" content))
+                                                                    padding
+                                                                    indent))
+                                         getter callback title padding (or indent 0)))
 
 (defun rest-fmt-generate-expandable-formatter (title getter padding text-provider &optional indent extended-getter)
   (lexical-let ((text-provider text-provider)
