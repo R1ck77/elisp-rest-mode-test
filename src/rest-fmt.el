@@ -36,14 +36,13 @@
   "Return a formatter that prints the field as a simple pair 'a   : b'"
   (rest-fmt-generate-indirect-plain-formatter title 'cdr padding indent))
 
+;;; TODO/FIXME name shadowed!
 (defun rest-fmt-generate-clickable-formatter (f getter callback &rest extra-args)
-  (rest-fmt-generate-indirect-formatter (lambda (content &rest extra-args)
-                                          ;;; TODO/FIXME
-                                          ;;; format with f and add the callback at this point!
-                                          ;;; Return a function of lambda
-                                          )
-                                        getter
-                                        extra-args))
+  (lexical-let* ((f f)
+                 (callback callback)
+                 (format-function (lambda (content &rest extra-args)
+                                    (rest-open-propertize (apply f (append (list content) extra-args)) callback))))
+    (apply 'rest-fmt-generate-indirect-formatter (append (list format-function  getter) extra-args))))
 
 (defun rest-fmt-generate-clickable-formatter (title getter padding callback &optional indent)
   (lexical-let ((callback callback)
