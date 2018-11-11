@@ -1,3 +1,4 @@
+(require 'cl)
 (require 'rest-state)
 (require 'rest-posts)
 
