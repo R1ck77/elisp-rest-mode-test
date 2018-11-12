@@ -50,7 +50,7 @@
 (defun rest-fmt-generate-simple-clickable-formatter (title getter padding callback &optional indent)
   (rest-fmt-generate-clickable-formatter (lambda (content title padding indent)
                                            (rest-fmt--format-simple title
-                                                                    (rest-text-yellow (format "<%s>" content))
+                                                                    (format "<%s> "(rest-text-yellow (substring content)))
                                                                     padding
                                                                     indent))
                                          getter callback title padding (or indent 0)))
