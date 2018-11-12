@@ -13,19 +13,30 @@
 (defun demo-posts--get-body (post)
   (cdr (assoc 'body post)))
 
+(defun demo-posts--show-missing-user ()
+  " <NOT FOUND> ")
+
+(defun demo-posts--show-valid-user (user-data)
+  (let ((user-name (alist-get 'name user-data)))
+    (rest-text-bold (number-to-string id))
+    (concat " <"
+            (rest-open-propertize (rest-text-yellow (substring user-name))
+                                  (lexical-let ((user-data user-data))
+                                    (lambda ()
+                                      (demo-author-show-author (alist-get 'id user-data)))))
+            "> ")))
+
+(defun demo-posts--show-user-name (user-data)
+  (if user-data
+      (demo-posts--show-valid-user user-data)
+    (demo-posts--show-missing-user)))
+
 (defun demo-posts--format-post (post get-user-f)
   (let* ((id (demo-posts--get-post-id post))
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
-         (user-name (cdr (assoc 'name user-for-id)))
          (title (cdr (assoc 'title post))))
     (concat "id:"
-            (rest-text-bold (number-to-string id))
-            " <"
-            (rest-open-propertize (rest-text-yellow (substring user-name))
-                                  (lexical-let ((post post))
-                                    (lambda ()                      
-                                      (demo-author-show-author (cdr (assoc 'userId post))))))
-            "> "
+            (demo-posts--show-user-name user-for-id)
             title "\n")))
 
 (defun demo-posts--format-post-with-user (post)
