@@ -1,10 +1,12 @@
 (require 'cl)
+(require 'rest-utils)
+(require 'rest-text)
+(require 'rest-open)
+(require 'rest-detail)
+(require 'rest-expand)
+(require 'rest-fmt)
+(require 'rest-list)
 (require 'rest-state)
-(require 'rest-posts)
-
-(defun rest ()
-  (interactive)
-  (rest-state-init)
-  (rest-posts-show-buffer))
 
 (provide 'rest)
+
