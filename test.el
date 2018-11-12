@@ -1,9 +1,9 @@
 (setq load-path (append load-path (list "src" "demo")))
 (require 'rest)
+(require 'demo)
 
 (defun test-demo ()
   (interactive)
   (rest-state-init)
-;  (rest-posts-show-buffer)
-  )
+  (demo-posts-show-buffer))
 
