@@ -6,6 +6,7 @@
 (require 'demo-posts)
 
 (defun demo-show ()
+  (interactive)
   (demo-state-init)
   (demo-posts-show-buffer))
 
