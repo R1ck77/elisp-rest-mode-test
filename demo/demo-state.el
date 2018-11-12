@@ -1,29 +1,22 @@
-(require 'rest-api)
+(require 'rest)
+(require 'demo-api)
 
-(defvar rest-state--users nil)
-(defvar rest-state--posts nil)
+(defvar demo-state--users nil)
+(defvar demo-state--posts nil)
 
-(defmacro rest-state--create-cached-getter (cache function)
-  (let ((value (make-symbol "value")))    
-    `(lambda (id)
-       (or (alist-get id ,cache)
-           (let ((,value (funcall ,function id)))
-             (setq ,cache (cons (cons id ,value) ,cache))
-             ,value)))))
+(defun demo-state-get-user-with-id (id))
+(defun demo-state-get-post-with-id (id))
 
-(defun rest-state-get-user-with-id (id))
-(defun rest-state-get-post-with-id (id))
+(defun demo-state-init ()
+  (setq demo-state--users nil)
+  (fset 'demo-state-get-user-with-id
+        (rest-state--create-cached-getter demo-state--users
+                                          'demo-api-read-user))
+  (setq demo-state--posts nil)
+  (fset 'demo-state-get-post-with-id 
+        (rest-state--create-cached-getter demo-state--posts
+                                          'demo-api-read-post)))
 
-(defun rest-state-init ()
-  (setq rest-state--users nil)
-  (fset 'rest-state-get-user-with-id
-        (rest-state--create-cached-getter rest-state--users
-                                          'rest-api-read-user))
-  (setq rest-state--posts nil)
-  (fset 'rest-state-get-post-with-id 
-        (rest-state--create-cached-getter rest-state--posts
-                                          'rest-api-read-post)))
+(demo-state-init)
 
-(rest-state-init)
-
-(provide 'rest-state)
+(provide 'demo-state)

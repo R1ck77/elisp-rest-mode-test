@@ -1,38 +1,35 @@
-(require 'rest-state)
-(require 'rest-detail)
-(require 'rest-open)
-(require 'rest-author)
-(require 'rest-fmt)
+(require 'rest)
+(require 'demo-author)
 
-(defconst rest-post-buffer-name "*Post Details*")
+(defconst demo-post-buffer-name "*Post Details*")
 
-(defconst rest-post--column-size 8)
+(defconst demo-post--column-size 8)
 
-(defconst rest-post--title-formatter (rest-fmt-generate-plain-formatter "title" rest-post--column-size))
+(defconst demo-post--title-formatter (rest-fmt-generate-plain-formatter "title" demo-post--column-size))
 
-(defconst rest-post--user-formatter (rest-fmt-generate-simple-clickable-formatter "author"
+(defconst demo-post--user-formatter (rest-fmt-generate-simple-clickable-formatter "author"
                                                                            (lambda (field-content)
                                                                              (substring
-                                                                              (rest-post--username-from-user-id (cdr field-content))))
-                                                                           rest-post--column-size
+                                                                              (demo-post--username-from-user-id (cdr field-content))))
+                                                                           demo-post--column-size
                                                                            (lambda (field-content)
-                                                                             (rest-author-show-author (cdr field-content)))))
+                                                                             (demo-author-show-author (cdr field-content)))))
 
-(defconst rest-post--body-formatter (rest-fmt-generate-body-formatter))
+(defconst demo-post--body-formatter (rest-fmt-generate-body-formatter))
 
-(defconst rest-post--template (list (cons 'title rest-post--title-formatter)
-                                      (cons 'userId rest-post--user-formatter)
-                                      (cons 'body rest-post--body-formatter)))
+(defconst demo-post--template (list (cons 'title demo-post--title-formatter)
+                                      (cons 'userId demo-post--user-formatter)
+                                      (cons 'body demo-post--body-formatter)))
 
-(defun rest-post--username-from-user-id (user-id)
-  (cdr (assoc 'name (rest-state-get-user-with-id user-id))))
+(defun demo-post--username-from-user-id (user-id)
+  (cdr (assoc 'name (demo-state-get-user-with-id user-id))))
 
-(defun rest-post--read-formatted-post (id)
-  (rest-detail-format-data (rest-state-get-post-with-id id)
-                           rest-post--template))
+(defun demo-post--read-formatted-post (id)
+  (rest-detail-format-data (demo-state-get-post-with-id id)
+                           demo-post--template))
 
-(defun rest-post-show-buffer (id)
-  (rest-detail-show rest-post-buffer-name
-                    (rest-post--read-formatted-post id)))
+(defun demo-post-show-buffer (id)
+  (rest-detail-show demo-post-buffer-name
+                    (demo-post--read-formatted-post id)))
 
-(provide 'rest-post)
+(provide 'demo-post)

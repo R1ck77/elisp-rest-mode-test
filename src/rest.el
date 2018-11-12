@@ -1,4 +1,5 @@
 (require 'cl)
+(require 'rest-api)
 (require 'rest-utils)
 (require 'rest-text)
 (require 'rest-open)

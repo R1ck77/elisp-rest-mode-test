@@ -1,29 +1,20 @@
-(require 'url)
-(require 'json)
+(require 'rest)
 
-(defvar schema "http")
-(defvar host   "jsonplaceholder.typicode.com")
-
-(defun rest-api--json-request (url)
-  (with-current-buffer (url-retrieve-synchronously url)
-    (goto-char url-http-end-of-headers)
-    (forward-line)
-    (let ((result (buffer-substring (point) (point-max))))
-      (kill-buffer (current-buffer))
-      (json-read-from-string result))))
+(defvar demo-api--schema "http")
+(defvar demo-api--host   "jsonplaceholder.typicode.com")
 
 ;;; TODO/FIXME can't make POST work: why?! Try with CURL
-(defun rest-api--request (path)
+(defun demo-api--request (path)
   (let ((url-request-method "GET"))    
-    (rest-api--json-request (format "%s://%s%s" schema host path))))
+    (rest-api-json-request (format "%s://%s%s" demo-api--schema demo-api--host path))))
 
-(defun rest-api-read-posts ()
-  (rest-api--request "/posts"))
+(defun demo-api-read-posts ()
+  (demo-api--request "/posts"))
 
-(defun rest-api-read-user (user-id)
-  (rest-api--request (format "/users/%d" user-id)))
+(defun demo-api-read-user (user-id)
+  (demo-api--request (format "/users/%d" user-id)))
 
-(defun rest-api-read-post (post-id)
-  (rest-api--request (format "/posts/%d" post-id)))
+(defun demo-api-read-post (post-id)
+  (demo-api--request (format "/posts/%d" post-id)))
 
-(provide 'rest-api)
+(provide 'demo-api)

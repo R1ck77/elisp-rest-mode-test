@@ -15,7 +15,7 @@
   (rest-utils-force-read-only)
   (lexical-let ((buffer-name buffer-name)
                 (content-function content-function)
-                (reset-function (or rest-function (lambda ()))))
+                (reset-function (or reset-function (lambda ()))))
     (rest-list--bind-keys (lambda ()
                             (interactive)
                             (funcall reset-function)
