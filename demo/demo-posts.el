@@ -19,7 +19,7 @@
 (defun demo-posts--show-valid-user (user-data)
   (let ((user-name (alist-get 'name user-data)))
     (rest-text-bold (number-to-string id))
-    (concat " <"
+    (concat "<"
             (rest-open-propertize (rest-text-yellow (substring user-name))
                                   (lexical-let ((user-data user-data))
                                     (lambda ()
@@ -35,8 +35,7 @@
   (let* ((id (demo-posts--get-post-id post))
          (user-for-id (funcall get-user-f (cdr (assoc 'userId post))))
          (title (cdr (assoc 'title post))))
-    (concat "id:"
-            (demo-posts--show-user-name user-for-id)
+    (concat (demo-posts--show-user-name user-for-id)
             title "\n")))
 
 (defun demo-posts--format-post-with-user (post)
